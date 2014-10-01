@@ -1,4 +1,4 @@
-openForge-greasemonkey-multi-script-compiler
+openforge-greasemonkey-multi-script-compiler
 =======
 
 ###About
@@ -24,6 +24,7 @@ It is a spiritual successor to [greasemonkey-multi-script-compiler](https://gith
 
 3. Create some symlinks to link OpenForge with this framwork and make the build scripts executable by running these commands. (Change paths if needed)
 
+```
    cd ~/flix_plus
    rm -rf src
    ln -s  ~/openforge-greasemonkey-multi-script-compiler/_output/flix_plus/ src
@@ -31,7 +32,8 @@ It is a spiritual successor to [greasemonkey-multi-script-compiler](https://gith
    cp compiler/_util/* .
    chmod +x z
    chmod +x compiler/y
-   
+```
+
 ###Building
    You can build an extension by running ./z from the flix_plus folder.  The Chrome extension is built in fix_plus/development/chrome.
    
