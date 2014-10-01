@@ -1,0 +1,57 @@
+{
+	"config_version": "2",
+	"name": "$NAME",
+	"author": "None",
+	"version": "$VERSION",
+	"platform_version": "v1.4",
+	"description": "$DESCRIPTION",
+	"modules": {
+		"logging": {
+			"level": "DEBUG"
+		},
+		"activations":
+	    [{ 	
+		        "styles": [],
+		        "patterns": $ACTIVATION_PATTERNS,
+		        "run_at": "start",
+		        "all_frames": false,
+		        "scripts": [
+		            "js/jquery-2.1.1.min.js",
+		            "js/jquery.visible.min.js",		            
+		            "js/arrive-2.0.0.min.js",		            
+		            "js/extlib.js",
+		            "js/fplib.js",
+		            "js/userscripts/start.js"
+		        ]
+	        },
+	        {
+		        "styles": [],
+		        "patterns": $ACTIVATION_PATTERNS,
+		        "run_at": "end",
+		        "all_frames": false,
+		        "scripts": [
+		            "js/userscripts/end.js"
+		        ]
+		    }			
+	    ],
+		"contact": true,
+		"file": true,
+		"is": true,
+		"media": true,
+		"prefs": true,
+		"request": {
+			"permissions": []
+		},
+		"message": true,
+		"tools": true,
+		"reload": true,
+        "background": {
+            "files": ["js/background.js"]
+        },
+        "button": {
+            "default_popup": "popup.html",
+            "default_title": "$NAME",
+            "default_icon": "favicon.ico"
+        }
+	}	
+}

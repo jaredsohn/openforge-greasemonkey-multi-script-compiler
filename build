@@ -1,0 +1,1 @@
+cat ../../../../_template/allheader.js *.js ../../../../_template/allfooter.js > all.js

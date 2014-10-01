@@ -1,0 +1,10 @@
+cd compiler
+./y
+cd ..
+source ./python-env/bin/activate
+forge-extension build chrome
+python fix_manifest.py
+python netflix_fix_manifest.py
+echo Output is in development/chrome/manifest.json 
+echo Finished at:
+date

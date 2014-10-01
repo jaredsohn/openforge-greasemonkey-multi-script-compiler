@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head><script src='/forge/app_config.js'></script><script src='/forge/all.js'></script>
+		<!-- Replace this with your extension's title. -->
+		<title>Options - $NAME</title>
+		<link rel="stylesheet" type="text/css" href="css/options.css" />
+		<script type="text/javascript" src="js/options-ui-setup.js"></script>
+		<script type="text/javascript" src="js/options.js"></script>
+		<style>
+
+		#column1 {
+		    margin-right: 300px;
+		}
+
+		#preview {white-space: nowrap; display: inline-block;}
+		img {max-width:100% !important; height:auto; display:block; }
+		.checkbox span { color:#999; cursor:help;  }
+
+		#column1-wrap {
+		    float: left;
+		    width: 100%;
+		}
+
+
+		#column2 {
+			position: absolute;
+		    z-index: 99999;
+		    top: 50px;
+		    margin-left: 400px;
+		    float: right;
+		    width: 600px;
+		    margin-top: 10px;
+		    margin-right: 10px;
+		    border-style: solid;
+		    border-width: 5px;
+		    padding: 5px;
+		    display: block;
+		}
+
+		#clear {
+		    clear: both;
+		}
+
+		</style>
+	</head>
+	<body>
+		<nav class="sideBar">
+			<h1>Chrome</h1>
+			<ul>
+				<li><a href="chrome://history" target="_blank">History</a></li>
+				<li>
+					<a href="chrome://extensions">Extensions</a>
+					<ul>
+						<li>$NAME</li>
+					</ul>
+				</li>
+				<li><a href="chrome://settings">Settings</a></li>
+				<li><a href="chrome://help">Help</a></li>
+			</ul>
+		</nav>
+		<header>
+			<h1>$NAME</h1>
+		</header>
+		<div id="column1-wrap">
+			<div id="column1">
+				<div id="script_list"></div>
+				<br>
+				<button id="save">Save</button>&nbsp;&nbsp;
+				<button id="check_all">Check all</button>&nbsp;&nbsp;
+				<button id="uncheck_all">Uncheck all</button>
+			</div>
+		</div>			
+		<div id="column2">
+			<h2>Preview: <div id="feature_name" style="display:inline-block"><small><small>(Mouse over '(show)' to see information about a feature)</small></small></div></h2>
+
+			<div id="image_holder">
+				<img id="preview_image"	>
+			</div>
+			<br><br>
+			<div id="feature_desc"></div>
+			<br>
+			<div id="author_credit"></div>
+			<br>
+		</div>
+		<div id="clear"></div>
+		<div id="instructions">
+			<br><br>Changes appear on page reload.<br><br>
+		</div>
+	</body>
+</html>

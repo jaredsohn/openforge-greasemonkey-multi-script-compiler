@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Replace this with your extension's title. -->
+		<title>Options - $NAME</title>
+		<link rel="stylesheet" type="text/css" href="css/options.css" />
+		<script type="text/javascript" src="js/options-ui-setup.js"></script>
+		<script type="text/javascript" src="js/options.js"></script>
+		<style>
+		.checkbox span { color:#999; cursor:help;  }
+		#checkboxes {float: left; width: 300px;}
+		#preview {float: right;}
+		</style>
+	</head>
+	<body>
+		<nav class="sideBar">
+			<h1>Chrome</h1>
+			<ul>
+				<li><a href="chrome://history" target="_blank">History</a></li>
+				<li>
+					<a href="chrome://extensions">Extensions</a>
+					<ul>
+						<li>$NAME</li>
+					</ul>
+				</li>
+				<li><a href="chrome://settings">Settings</a></li>
+				<li><a href="chrome://help">Help</a></li>
+			</ul>
+		</nav>
+		<div id="checkboxes">
+			<header>
+				<h1>$NAME</h1>
+			</header>
+			<div id="script_list"></div>
+
+			<br>
+			<button id="save">Save</button>&nbsp;&nbsp;
+			<button id="check_all">Check all</button>&nbsp;&nbsp;
+			<button id="uncheck_all">Uncheck all</button>
+			<br><br>Changes appear on page reload.<br><br><br>
+		</div>
+		<div id="preview">
+			<img id="preview_image">
+		</div>
+	</body>
+</html>
