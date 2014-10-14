@@ -180,7 +180,7 @@ chrome.storage.local.get("flix_plus profilename", function(items)
 	{
 		document.getElementById("column1-wrap").style.display = "none";
 		document.getElementById("column2").style.display = "none";
-		document.getElementById("instructions").innerHTML = "<BR><BR><BR><B>You must log in to Netflix prior to setting preferences.</B><BR><BR>";
+		document.getElementById("instructions").innerHTML = "<BR><BR><BR><B>You must log in to Netflix prior to setting preferences.<br><br><br>If you just installed, you may need to reload the Netflix Instant homepage so that the active Netflix profile can be detected.<br><br><br>If after doing this you still get this message, try switching Netflix profiles.</B><BR><BR>";
 		return;
 	}
 	console.log("profile name is " + profile_name);

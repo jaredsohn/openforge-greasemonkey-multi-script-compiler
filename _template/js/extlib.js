@@ -8,6 +8,7 @@
 var extlib = extlib || {};
 var _extlib = function()
 {
+	var self = this;
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// CSS Selectors
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +21,11 @@ var _extlib = function()
 	    style.type = 'text/css';
 	    style.innerHTML = css;
 	    head.appendChild(style);
+	}
+
+	//Where el is the DOM element you'd like to test for visibility.  Do not use for fixed elements.
+	this.isHidden = function(el) {
+    	return (el.offsetParent === null)
 	}
 
 	// from Stackoverflow
@@ -92,9 +98,25 @@ var _extlib = function()
 		    console.log(msg);
 	}
 
+	// From Stackoverflow
+	this.cumulativeOffset = function(element) {
+	    var top = 0, left = 0;
+	    do {
+	        top += element.offsetTop  || 0;
+	        left += element.offsetLeft || 0;
+	        element = element.offsetParent;
+	    } while(element);
+
+	    return {
+	        top: top,
+	        left: left
+	    };
+	};	
 	// We call a function to get more data only if it has been five minutes since last time and gets full data if it has been 28 hours
 	// since the last time we did that (in case older data was undone). Uses localStorage.
-	// original code
+	//
+	// The calling code should ensure the new data is written to localStorage (possibly merged with existing data)
+	// This code was written for Flix Plus
 	this.checkForNewData = function(keyname, wait_in_s, full_wait_in_s, ajax_call, callback) {
 		var now = new Date().getTime();
 
@@ -108,6 +130,8 @@ var _extlib = function()
 			delete localStorage[keyname];
 			history_last_checked = 0;
 		}
+
+		var old_data = localStorage[keyname];
 
 		var long_enough_since_update = new Date(parseInt(history_last_checked)).getTime() + (wait_in_s * 1000);
 		var long_enough_since_update2 = new Date(parseInt(last_full_check)).getTime() + (full_wait_in_s * 1000);
@@ -124,23 +148,30 @@ var _extlib = function()
 
 			ajax_call(history_last_checked, function(data)
 			{
-				localStorage[keyname] = data;
-				callback(data);
+				if (typeof(old_data) !== "undefined")
+					data = old_data + "," + data;
+				//localStorage[keyname] = data;
+				if (callback !== null)
+					callback(data);
 			});
 
 			localStorage[keyname + "_last_checked"] = now;
 
 			if (history_last_checked === 0)
+			{
 				localStorage[keyname + "_last_full_check"] = now;
+				localStorage[keyname] = ""; // don't merge with old data
+			}
 
 		} else
 		{
 			var data = localStorage[keyname];
 			if (typeof(data) === "undefined")
 				data = "";
-			callback(data);
+
+			if (callback !== null)
+				callback(data); 
 		}
 	};
-
 }
 _extlib.call(extlib);

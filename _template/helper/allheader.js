@@ -67,7 +67,7 @@ main = function(callback)
 
   var profile_name = fplib.getProfileName();
   consolelog(1, "profile name is " + profile_name);
-  
+
   consolelog(2,"Loading prefs");
   consolelog(default_scripts);
   load_enabled_scripts(profile_name, default_scripts, function(enabled_scripts_param)
