@@ -21,6 +21,7 @@
 		            "js/arrive-2.0.0.min.js",		            
 		            "js/extlib.js",
 		            "js/fplib.js",
+		            "js/keyboard_shortcuts_info.js",		            
 		            "js/userscripts/start.js"
 		        ]
 	        },

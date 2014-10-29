@@ -51,6 +51,7 @@ var _extlib = function()
 		css +=   "border-left: 1px solid #CCCCCC;";
 		css +=   "margin-left: 5px;";
 		css +=   "cursor: pointer; cursor: hand;";
+		css +=   "display:inline";
 		css += "}";
 		this.addGlobalStyle(css);
 	}
@@ -97,7 +98,7 @@ var _extlib = function()
 		if (typeof(localStorage["extlib debug"]) !== "undefined")
 		    console.log(msg);
 	}
-
+	
 	// From Stackoverflow
 	this.cumulativeOffset = function(element) {
 	    var top = 0, left = 0;

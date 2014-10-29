@@ -14,13 +14,18 @@ $SCRIPT_ID_code = function() {
 
 	    if (level <= __debug_level)
 	    {
-	    	if (typeof(msg) === "string")
-		        console.log("$SCRIPT_ID: " + msg);
-		    else
-		    {
-		    	console.log("$SCRIPT_ID:");
-			    console.log(msg);
-		    }
+			if ((__debug_level === 0) || (__debug_level === "0"))
+				console.log(msg);
+			else
+			{
+		    	if (typeof(msg) === "string")
+			        console.log("$SCRIPT_ID: " + msg);
+			    else
+			    {
+			    	console.log("$SCRIPT_ID:");
+				    console.log(msg);
+			    }
+			}
 	    }
 	}
 

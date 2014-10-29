@@ -54,6 +54,8 @@ function consolelog(level, msg)
     // -- 1 = just high level messages (produced by compiler)
     // -- 2 = less important messages (produced by compiler)
     // -- 3 = all messages (produced by userscripts)
+    //
+    // so call this method with level=-1 to show it even if all other messages are suppressed.
 
     if (level <= __debug_level)
         console.log(msg);

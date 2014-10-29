@@ -3,6 +3,7 @@ var scripts_data = $SCRIPTS_JSON;
 var profile_name = "_unknown";
 var KEY_NAME = "flix_plus " + profile_name + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
 var defaults = "$DEFAULT_SCRIPTS";
+var _keyboard_shortcuts_help = "";
 //console.log(scripts_data.categories);
 
 init_config = function(saved_state)
@@ -89,7 +90,7 @@ init_config = function(saved_state)
                 //console.log(script_info);
                 preview_image.src = script_info.screenshot;
                 document.getElementById("feature_name").textContent = e.target.parentNode.childNodes[1].textContent;
-                document.getElementById("feature_desc").innerHTML = script_info.description;
+                document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", _keyboard_shortcuts_help);
                 if (script_info.author_url !== "")
                 	document.getElementById("author_credit").innerHTML = "Script by <a href='" + script_info.author_url + "'>" + script_info.author + "</a>";
                 else
@@ -209,5 +210,28 @@ chrome.storage.local.get("flix_plus profilename", function(items)
 		//console.log("enabled_scripts = ");
 		//console.log(enabled_scripts);
 		init_config(enabled_scripts);
+	});
+
+	var shortcuts_key = "flix_plus " + profile_name + " keyboard_shortcuts";
+	chrome.storage.sync.get(shortcuts_key, function(items)
+	{
+	    console.log("~~");
+	    console.log(items);
+	    console.log("!!");
+
+	    if (typeof(items[shortcuts_key]) === "undefined")
+	    {
+	        console.log("generating default shortcut keys");
+	        _keyboard_shortcuts = keyboard_shortcuts_info.generate_defaults();
+	    }
+	    else
+	    {
+	        console.log("shortcut keys found");
+	        _keyboard_shortcuts = items[shortcuts_key];
+	        console.log(_keyboard_shortcuts);
+	    }
+	    var dicts = keyboard_shortcuts_info.create_keyboard_shortcut_dicts(_keyboard_shortcuts);
+	    _keyboard_shortcuts_help = keyboard_shortcuts_info.get_help_text(dicts[1]);
+	    console.log(_keyboard_shortcuts_help);
 	});
 });
