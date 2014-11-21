@@ -4,6 +4,7 @@ window.onload = function()
 	document.getElementById("feedback").addEventListener("click", goto_feedback);
 	document.getElementById("more_info").addEventListener("click", goto_more_info);
 	document.getElementById("options").addEventListener("click", goto_options);
+	setTimeout(function() { document.getElementById("options").focus(); }, 100);
 }
 
 var goto_webstore = function()

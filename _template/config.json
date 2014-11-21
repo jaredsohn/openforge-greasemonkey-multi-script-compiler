@@ -1,6 +1,6 @@
 {
 	"config_version": "2",
-	"name": "$NAME",
+	"name": "$NAME_TEXT",
 	"author": "None",
 	"version": "$VERSION",
 	"platform_version": "v1.4",
@@ -17,11 +17,12 @@
 		        "all_frames": false,
 		        "scripts": [
 		            "js/jquery-2.1.1.min.js",
-		            "js/jquery.visible.min.js",		            
-		            "js/arrive-2.0.0.min.js",		            
+		            "js/jquery.visible.min.js",
+		            "js/arrive-2.0.0.min.js",
+		            "js/async.js",
 		            "js/extlib.js",
 		            "js/fplib.js",
-		            "js/keyboard_shortcuts_info.js",		            
+		            "js/keyboard_shortcuts_info.js",
 		            "js/userscripts/start.js"
 		        ]
 	        },
@@ -51,7 +52,7 @@
         },
         "button": {
             "default_popup": "popup.html",
-            "default_title": "$NAME",
+            "default_title": "$NAME_TEXT",
             "default_icon": "favicon.ico"
         }
 	}	

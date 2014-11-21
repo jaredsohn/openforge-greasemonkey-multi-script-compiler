@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<!-- Replace this with your extension's title. -->
-		<title>Options - $NAME</title>
+		<title>Options - $NAME_TEXT</title>
 		<link rel="stylesheet" type="text/css" href="css/options.css" />
 		<script type="text/javascript" src="js/options-ui-setup.js"></script>
 		<script type="text/javascript" src="js/options.js"></script>
@@ -20,7 +20,7 @@
 				<li>
 					<a href="chrome://extensions">Extensions</a>
 					<ul>
-						<li>$NAME</li>
+						<li>$NAME_SHORT</li>
 					</ul>
 				</li>
 				<li><a href="chrome://settings">Settings</a></li>
@@ -29,7 +29,7 @@
 		</nav>
 		<div id="checkboxes">
 			<header>
-				<h1>$NAME</h1>
+				<h1>$NAME_HTML</h1>
 			</header>
 			<div id="script_list"></div>
 

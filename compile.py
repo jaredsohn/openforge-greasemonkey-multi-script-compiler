@@ -168,7 +168,7 @@ def write_csv(filename, all_data):
 
 	fields = ['id', 'name', 'name_override', 'name_parsed', 'category_required', 'enabled_override', 'description', 'description_override', 'description_parsed', 'match_include', 'match_include_override', 'match_include_parsed', 'exclude', 'exclude_override', 'exclude_parsed', 'require', 'require_override', 'require_parsed', 
 		'run-at', 'enabled-by-default', 'linecount', 'longest_line_length', 'namespace', 'version', 'grant', 'updateURL', 'downloadURL', 'homepage', 'license', 'icon',
-		 'unsupported_count', 'security_count', 'not_crossplatform_count', 'filename', 'screenshot_required', 'author', 'author_url', 'ignore_warnings', 'order_required', 'enabled_by_default_required']
+		 'unsupported_count', 'security_count', 'not_crossplatform_count', 'filename', 'screenshot_required', 'author', 'author_url', 'ignore_warnings', 'order_required', 'enabled_by_default_required', 'configure_required']
 
  	for field in fields:
 		csv_headers[field] = None
@@ -210,6 +210,7 @@ def create_data_for_ui(all_data, init_categories_order):
 		ui_data["userscripts"][key]['description'] = file_dict['description']
 		ui_data["userscripts"][key]['author'] = file_dict['author']
 		ui_data["userscripts"][key]['author_url'] = file_dict['author_url']
+		ui_data["userscripts"][key]['configure'] = file_dict['configure_required']
 
 		if 'category_required' in file_dict:
 			category = file_dict['category_required']
@@ -255,10 +256,12 @@ def process_userscripts(project_name):
 	template_popup_html           = open(join(template_folder, "popup.html"), 					'r').read()
 	template_options_html         = open(join(template_folder, "options.html"), 				'r').read()
 
+
 	template_popup_js             = open(join(template_folder, "js/popup.js"), 					'r').read()
 
 	template_openforge_config     = open(join(template_folder, "config.json"),					'r').read() #openforge template file
 
+	input_welcome_html            = open(join(input_folder,	   "welcome.html"), 				'r').read()
 	compiler_config_file  		  = open(join(input_folder,    "compiler_config.json"),			'r')
 	compiler_config = json.load(compiler_config_file)
 
@@ -325,6 +328,7 @@ def process_userscripts(project_name):
 				header['screenshot_required'] = ''
 				header['order_required'] = ''
 				header['enabled_by_default_required'] = ''
+				header['configure_required'] = ''
 
 				header['ignore_warnings'] = ignore_warnings
 
@@ -359,7 +363,7 @@ def process_userscripts(project_name):
 				#	#TODO: get filename, if it looks like jquery, use canonical version; check if exists (and give unique name if so)
 				#	#TODO: write to output; append to header['filename']
 
-				required_fields = ["match_include", "description", "order_required", "enabled_by_default_required"]
+				required_fields = ["match_include", "description", "order_required", "enabled_by_default_required", "configure_required"]
 				for field in required_fields:
 					if (field in header == False) or (header[field].strip() == ""):
 						proceed = False
@@ -409,13 +413,15 @@ def process_userscripts(project_name):
 	# Copy over files from template and input folders
 	copyanything(os.path.join(template_folder, "js"), os.path.join(output_folder, "js"))
 	copyanything(os.path.join(template_folder, "css"), os.path.join(output_folder, "css"))
+	copyanything(os.path.join(template_folder, "fonts"), os.path.join(template_folder, "fonts"))
 
 	shutil.copyfile(join(template_folder, "index.html"), join(output_folder, "index.html"))
 	shutil.copyfile(join(template_folder, ".forgeignore"), join(output_folder, ".forgeignore"))
 	shutil.copyfile(join(template_folder, "LICENSE-crx-options-page.txt"), join(output_folder, "LICENSE-crx-options-page.txt"))	
 
 	shutil.copyfile(join(input_folder, "identity.json"), join(output_folder, "identity.json"))	
-	shutil.copyfile(join(input_folder, "welcome.html"), join(output_folder, "welcome.html"))
+	shutil.copyfile(join(input_folder, "prefs_keyboard_shortcuts.html"), join(output_folder, "prefs_keyboard_shortcuts.html"))
+
 	copyanything(os.path.join(input_folder, "icons"), output_folder)
 	copyanything(os.path.join(input_folder, "css"), os.path.join(output_folder, "css")) 
 	copyanything(os.path.join(input_folder, "img"), os.path.join(output_folder, "img"))
@@ -427,7 +433,9 @@ def process_userscripts(project_name):
 	default_list_string = get_default_list_string(all_data)
 
 	# Create a pattern for doing multiple token replacements
-	rep = { "$NAME": compiler_config["name"],
+	rep = { "$NAME_SHORT": compiler_config["name_short"],
+			"$NAME_HTML": compiler_config["name_html"],
+			"$NAME_TEXT": compiler_config["name_text"],
 			"$ACTIVATION_PATTERNS": compiler_config["activation_patterns"], 
 			"$VERSION": compiler_config["version"], 
 			"$DESCRIPTION": compiler_config["description"],
@@ -525,6 +533,10 @@ def process_userscripts(project_name):
 
 	template_popup_html = pattern.sub(lambda m: rep[re.escape(m.group(0))], template_popup_html)
 	write_file(join(output_folder, "popup.html"), template_popup_html)
+
+	input_welcome_html = pattern.sub(lambda m: rep[re.escape(m.group(0))], input_welcome_html)
+	write_file(join(output_folder, "welcome.html"), input_welcome_html)
+
 
 	##############################################################################################################
 

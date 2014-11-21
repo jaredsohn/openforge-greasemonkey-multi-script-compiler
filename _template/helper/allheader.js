@@ -6,6 +6,12 @@ if ((location.host === "dvd.netflix.com") && location.pathname.indexOf("/Search"
   return; // do not affect dvd pages except for the search page
 }
 
+// Redirect WiAltGenre page to WiGenre
+if (window.location.href.indexOf("WiGenre") !== -1) { 
+  document.removeChild(document.documentElement);
+  window.location.href = window.location.href.replace("WiGenre", "WiAltGenre"); 
+}
+
 // Make sure that page icon appears to show preferences
 chrome.runtime.sendMessage({}, function(response) { });
 

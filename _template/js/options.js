@@ -63,8 +63,15 @@ init_config = function(saved_state)
 				iSpan.appendChild(document.createTextNode(" (show)"));
 				label.appendChild(iSpan);
 
-				//TODO: add +  " <span>(show)</span>"
-
+				if (scripts_data.userscripts[keys[key_index]].configure === "True")
+				{
+					var iSpan = document.createElement('span');
+					iSpan.style.color = "#999";
+					iSpan.style.cursor = "pointer";
+					iSpan.className = "configure_button";
+					iSpan.appendChild(document.createTextNode(" (configure)"));
+					section_node.appendChild(iSpan);
+				}
 
 				var br = document.createElement('br');
 				section_node.appendChild(br);
@@ -75,42 +82,50 @@ init_config = function(saved_state)
 					checkbox_node.checked = !(saved_state[key] === "false");
 				else
 					checkbox_node.checked = false;
-
-				document.getElementById("check_all").addEventListener("click", check_all);
-				document.getElementById("uncheck_all").addEventListener("click", uncheck_all);
-				document.getElementById("save").addEventListener("click", on_save);
-
 			}
-		} 
-
-		document.body.onmouseover = function (e) {
-			var preview_image = document.getElementById("preview_image");
-			if (e.target.nodeName == "SPAN" && e.target.parentNode.nodeName == "LABEL") {    
-                var script_info = scripts_data.userscripts[[e.target.parentNode.firstChild.id]];
-                //console.log(script_info);
-                preview_image.src = script_info.screenshot;
-                document.getElementById("feature_name").textContent = e.target.parentNode.childNodes[1].textContent;
-                document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", _keyboard_shortcuts_help);
-                if (script_info.author_url !== "")
-                	document.getElementById("author_credit").innerHTML = "Script by <a href='" + script_info.author_url + "'>" + script_info.author + "</a>";
-                else
-                	document.getElementById("author_credit").innerHTML = "Script by " + script_info.author;
-
-//                document.getElementById("column2").style.display = "block"
-            } else {
-//				document.getElementById("column2").style.display = "none"
-			}
-		};
-
-        window.onresize = function(event) {
-            document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";
-        };
-
-        document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";  
+		}
 	}
+	document.getElementById("check_all").addEventListener("click", on_check_all);
+	document.getElementById("uncheck_all").addEventListener("click", on_uncheck_all);
+	document.getElementById("save").addEventListener("click", on_save);
+	var configure_buttons = document.getElementsByClassName("configure_button");
+	for (i = 0; i < configure_buttons.length; i++)
+		configure_buttons[i].addEventListener("click", on_configure);
+
+	document.body.onmouseover = function (e) {
+		var preview_image = document.getElementById("preview_image");
+		if ((e.target.nodeName == "SPAN" && e.target.parentNode.nodeName == "LABEL"))
+		{
+			if (e.target.innerText === " (show)")
+			{
+	            var script_info = scripts_data.userscripts[[e.target.parentNode.firstChild.id]];
+	            //console.log(script_info);
+	            preview_image.src = script_info.screenshot;
+	            document.getElementById("feature_name").textContent = e.target.parentNode.childNodes[1].textContent;
+				document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", _keyboard_shortcuts_help);
+
+	            if (script_info.author_url !== "")
+	            	document.getElementById("author_credit").innerHTML = "Script by <a href='" + script_info.author_url + "'>" + script_info.author + "</a>";
+	            else
+	            	document.getElementById("author_credit").innerHTML = "Script by " + script_info.author;
+	        }
+		}
+	};
+
+    window.onresize = function(event) {
+        document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";
+    };
+
+    document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";  
 }
 
-var check_all = function()
+var on_configure = function(e)
+{
+	console.log("configure!");
+	window.open("prefs_" + e.target.previousElementSibling.getAttribute("for").substring(3) + ".html");
+}
+
+var on_check_all = function()
 {
 	var elements = document.getElementsByClassName("script_entry");
 	var i;
@@ -120,7 +135,7 @@ var check_all = function()
 	}
 };
 
-var uncheck_all = function()
+var on_uncheck_all = function()
 {
 	var elements = document.getElementsByClassName("script_entry");
 	var i;
@@ -212,26 +227,9 @@ chrome.storage.local.get("flix_plus profilename", function(items)
 		init_config(enabled_scripts);
 	});
 
-	var shortcuts_key = "flix_plus " + profile_name + " keyboard_shortcuts";
-	chrome.storage.sync.get(shortcuts_key, function(items)
+	keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + profile_name + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
 	{
-	    console.log("~~");
-	    console.log(items);
-	    console.log("!!");
-
-	    if (typeof(items[shortcuts_key]) === "undefined")
-	    {
-	        console.log("generating default shortcut keys");
-	        _keyboard_shortcuts = keyboard_shortcuts_info.generate_defaults();
-	    }
-	    else
-	    {
-	        console.log("shortcut keys found");
-	        _keyboard_shortcuts = items[shortcuts_key];
-	        console.log(_keyboard_shortcuts);
-	    }
-	    var dicts = keyboard_shortcuts_info.create_keyboard_shortcut_dicts(_keyboard_shortcuts);
-	    _keyboard_shortcuts_help = keyboard_shortcuts_info.get_help_text(dicts[1]);
+	    _keyboard_shortcuts_help = keyboard_shortcuts_info.get_help_text(keyboard_id_to_shortcut_dict, true);
 	    console.log(_keyboard_shortcuts_help);
 	});
 });
