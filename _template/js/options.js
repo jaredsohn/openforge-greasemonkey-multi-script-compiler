@@ -63,7 +63,7 @@ init_config = function(saved_state)
 				iSpan.appendChild(document.createTextNode(" (show)"));
 				label.appendChild(iSpan);
 
-				if (scripts_data.userscripts[keys[key_index]].configure === "True")
+				if (scripts_data.userscripts[keys[key_index]].configure.toUpperCase() === "TRUE")
 				{
 					var iSpan = document.createElement('span');
 					iSpan.style.color = "#999";

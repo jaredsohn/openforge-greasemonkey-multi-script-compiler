@@ -117,62 +117,120 @@ var _extlib = function()
 	// since the last time we did that (in case older data was undone). Uses localStorage.
 	//
 	// The calling code should ensure the new data is written to localStorage (possibly merged with existing data)
+	//
+	// keynames can be an array or a string.  Only the first keyname will be used with last_full_check and _last_checked but
+	// it will otherwise work with data for all keys.  The callback will pass back an array if keynames was an array and otherwise passes
+	// back a string.
+	//
 	// This code was written for Flix Plus
-	this.checkForNewData = function(keyname, wait_in_s, full_wait_in_s, ajax_call, callback) {
+	this.checkForNewData = function(keynames, wait_in_s, full_wait_in_s, ajax_call, callback) {
+		console.log("keynames = ");
+		console.log(keynames);
 		var now = new Date().getTime();
+		var keynames_array = keynames;
 
-		var last_full_check = localStorage[keyname + "_last_full_check"];
+		if (keynames.constructor === String)
+			keynames_array = [keynames];
+
+		var len = keynames_array.length;
+
+		var last_full_check = localStorage[keynames_array[0] + "_last_full_check"];
 		if (typeof(last_full_check) === "undefined")
 			last_full_check = 0;
 
-		var history_last_checked = localStorage[keyname + "_last_checked"];
+		var history_last_checked = localStorage[keynames_array[0] + "_last_checked"];
 		if (typeof(history_last_checked) === "undefined")
 		{
-			delete localStorage[keyname];
+			for (i = 0; i < len; i++)
+				delete localStorage[keynames_array[i]];
 			history_last_checked = 0;
 		}
 
-		var old_data = localStorage[keyname];
+		var old_datas = [];
+		for (i = 0; i < len; i++)
+			old_datas.push(localStorage[keynames_array[i]]);
 
 		var long_enough_since_update = new Date(parseInt(history_last_checked)).getTime() + (wait_in_s * 1000);
 		var long_enough_since_update2 = new Date(parseInt(last_full_check)).getTime() + (full_wait_in_s * 1000);
 
 		if (long_enough_since_update2 < now)
 		{
-			consolelog("getting all data from scratch again for " + keyname);
+			for (i = 0; i < len; i++)
+				consolelog("getting all data from scratch again for " + keynames_array[i]);
 			history_last_checked = 0;
 		}
 
 		if (Math.min(long_enough_since_update, long_enough_since_update2) < now)
 		{
-			consolelog("checking " + keyname + "_last_checked");
+			consolelog("checking " + keynames_array[0] + "_last_checked");
 
-			ajax_call(history_last_checked, function(data)
+			ajax_call(history_last_checked, function(datas)
 			{
-				if (typeof(old_data) !== "undefined")
-					data = old_data + "," + data;
-				//localStorage[keyname] = data;
+				if (keynames.constructor === String)
+					datas = old_datas[0] + "," + datas;
+				else if (typeof(old_datas) !== "undefined")
+				{
+					for (i = 0; i < len; i++)
+						datas[i] = old_datas[i] + "," + datas[i];
+				}
+
+				//localStorage[keynames_array[0]] = data;
 				if (callback !== null)
-					callback(data);
+					callback(datas);
 			});
 
-			localStorage[keyname + "_last_checked"] = now;
+			localStorage[keynames_array[0] + "_last_checked"] = now;
 
 			if (history_last_checked === 0)
 			{
-				localStorage[keyname + "_last_full_check"] = now;
-				localStorage[keyname] = ""; // don't merge with old data
+				localStorage[keynames_array[0] + "_last_full_check"] = now;
+				for (i = 0; i < len; i++)
+					localStorage[keynames_array[i]] = ""; // don't merge with old data
 			}
 
 		} else
 		{
-			var data = localStorage[keyname];
-			if (typeof(data) === "undefined")
-				data = "";
+			var datas = [];
+			for (i = 0; i < len; i++)
+			{
+				var data = localStorage[keynames_array[i]];
+				if (typeof(data) === "undefined")
+					data = "";
+				datas.push(data);
+			}
+
+			if (keynames.constructor === String)
+				datas = datas[0];
 
 			if (callback !== null)
-				callback(data); 
+				callback(datas); 
 		}
 	};
+
+	// from netflix-rate userscript
+	this.endsWith = function(str, suffix) {
+	    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+	}
+
+	// Helper function for escaping API urls
+	// from netflix-rate userscript
+	this.escapeHTML = function(str) {
+	    return str.replace(/[&"<>]/g, function(m) {
+	        return { 
+	            "&": "&amp;",
+	            '"': "&quot;",
+	            "<": "&lt;",
+	            ">": "&gt;",
+	        }[m];
+	    });
+	}
+
+	// from netflix-rate userscript
+	this.addStyle = function(style_id, css_url)
+	{
+	    if (!$('#' + style_id).length) {
+    	    $("head").append("<link id='fp_rating_overlay' href='" + css_url + "' type='text/css' rel='stylesheet' />");
+    	}
+    }
 }
 _extlib.call(extlib);

@@ -421,6 +421,7 @@ def process_userscripts(project_name):
 
 	shutil.copyfile(join(input_folder, "identity.json"), join(output_folder, "identity.json"))	
 	shutil.copyfile(join(input_folder, "prefs_keyboard_shortcuts.html"), join(output_folder, "prefs_keyboard_shortcuts.html"))
+	shutil.copyfile(join(input_folder, "prefs_fade_rated.html"), join(output_folder, "prefs_fade_rated.html"))
 
 	copyanything(os.path.join(input_folder, "icons"), output_folder)
 	copyanything(os.path.join(input_folder, "css"), os.path.join(output_folder, "css")) 
