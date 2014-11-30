@@ -90,7 +90,7 @@ var _extlib = function()
 	// from Stackoverflow
 	this.stackTrace = function()
 	{
-		 console.log((new Error).stack);
+		 consolelog((new Error).stack);
 	}
 
 	function consolelog(msg)
@@ -124,8 +124,8 @@ var _extlib = function()
 	//
 	// This code was written for Flix Plus
 	this.checkForNewData = function(keynames, wait_in_s, full_wait_in_s, ajax_call, callback) {
-		console.log("keynames = ");
-		console.log(keynames);
+		consolelog("keynames = ");
+		consolelog(keynames);
 		var now = new Date().getTime();
 		var keynames_array = keynames;
 
@@ -231,6 +231,32 @@ var _extlib = function()
 	    if (!$('#' + style_id).length) {
     	    $("head").append("<link id='fp_rating_overlay' href='" + css_url + "' type='text/css' rel='stylesheet' />");
     	}
+    }
+
+    // returns array of length two with the range (as integers); if part of range doesn't exist, set value to null
+    this.parse_year_range = function(year_str)
+    {
+        if ((year_str === null) || (year_str.trim() === ""))
+            return [null, null];
+
+    	try
+    	{
+	        var years = [];
+
+	        if (year_str.indexOf("-") !== -1)
+	        {
+	            var year_parts = year_str.split("-");
+	            years = [parseInt(year_parts[0]), parseInt(year_parts[1])];
+	        } else
+	            years = [parseInt(year_str), null];
+
+		} catch (ex)
+		{
+			consolelog(ex);
+			years = [null, null];
+		}
+
+        return years;
     }
 }
 _extlib.call(extlib);
