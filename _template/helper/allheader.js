@@ -89,7 +89,7 @@ main = function(callback)
     {
       consolelog("changing css for extlib_button to match darker_netflix");
       extlib.addGlobalStyle('.extlib_button { background-color: #333333 !important ; color: #EEEEEE; !important  }');
-      extlib.addGlobalStyle('.flix_plus_shownsectionbutton, .flix_plus_hiddensectionbutton, .flix_plus_scrolls_shown_button, .flix_plus_all_shown_button { -webkit-filter: invert(100%); }');
+      extlib.addGlobalStyle('.fp_button, .flix_plus_shownsectionbutton, .flix_plus_hiddensectionbutton, .flix_plus_scrolls_shown_button, .flix_plus_all_shown_button { -webkit-filter: invert(100%); }');
 
       // Added by jaredsohn-netflix so that 'kids' doesn't show up twice in menu
       if ((location.host === "dvd.netflix.com") && location.pathname.indexOf("/Search") === 0)

@@ -63,12 +63,13 @@ init_config = function(saved_state)
 				iSpan.appendChild(document.createTextNode(" (show)"));
 				label.appendChild(iSpan);
 
-				if (scripts_data.userscripts[keys[key_index]].configure.toUpperCase() === "TRUE")
+				if (scripts_data.userscripts[keys[key_index]].configure.toUpperCase() !== "FALSE")
 				{
 					var iSpan = document.createElement('span');
 					iSpan.style.color = "#999";
 					iSpan.style.cursor = "pointer";
 					iSpan.className = "configure_button";
+					$(iSpan).attr("data-filename", scripts_data.userscripts[keys[key_index]].configure);
 					iSpan.appendChild(document.createTextNode(" (configure)"));
 					section_node.appendChild(iSpan);
 				}
@@ -122,7 +123,8 @@ init_config = function(saved_state)
 var on_configure = function(e)
 {
 	console.log("configure!");
-	window.open("prefs_" + e.target.previousElementSibling.getAttribute("for").substring(3) + ".html");
+	console.log(e);
+	window.open(e.target.getAttribute("data-filename"));
 }
 
 var on_check_all = function()
