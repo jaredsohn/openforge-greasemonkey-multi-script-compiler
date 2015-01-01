@@ -25,7 +25,7 @@ var _extlib = function()
 
 	//Where el is the DOM element you'd like to test for visibility.  Do not use for fixed elements.
 	this.isHidden = function(el) {
-    	return (el.offsetParent === null)
+    	return ((el.offsetParent === null) || (!document.contains(el)));
 	}
 
 	// from Stackoverflow

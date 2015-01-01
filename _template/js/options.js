@@ -1,7 +1,7 @@
 var scripts_data = $SCRIPTS_JSON;
 
-var profile_name = "_unknown";
-var KEY_NAME = "flix_plus " + profile_name + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
+var _profile_name = "_unknown";
+var KEY_NAME = "flix_plus " + _profile_name + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
 var defaults = "$DEFAULT_SCRIPTS";
 var _keyboard_shortcuts_help = "";
 //console.log(scripts_data.categories);
@@ -88,6 +88,8 @@ init_config = function(saved_state)
 	}
 	document.getElementById("check_all").addEventListener("click", on_check_all);
 	document.getElementById("uncheck_all").addEventListener("click", on_uncheck_all);
+	document.getElementById("restore_defaults").addEventListener("click", on_restore_defaults);
+
 	document.getElementById("save").addEventListener("click", on_save);
 	var configure_buttons = document.getElementsByClassName("configure_button");
 	for (i = 0; i < configure_buttons.length; i++)
@@ -147,6 +149,24 @@ var on_uncheck_all = function()
 	}
 };
 
+var on_restore_defaults = function()
+{
+	console.log(_profile_name);
+	if (window.confirm("Click okay to restore this extension's defaults.  Cannot be undone.") === true)
+	{
+		var script_list = document.getElementById("script_list");
+		script_list.innerHTML = "";
+		chrome.storage.sync.clear();
+		chrome.storage.local.clear();
+
+		console.log("setting profilename: " + _profile_name);
+		chrome.storage.local.set({"flix_plus profilename" : _profile_name}, function(items) {});
+
+		load_settings();
+		alert("Extension defaults restored.");
+	}
+}
+
 var on_save = function()
 {
 	var elements = document.getElementsByClassName("script_entry");
@@ -188,31 +208,11 @@ var on_save = function()
 	});
 }
 
-
-//// Actually do stuff /////
-chrome.storage.local.get("flix_plus profilename", function(items)
+function load_settings()
 {
-	var profile_name = items["flix_plus profilename"];
-
-	if (typeof(profile_name) === "undefined")
-	{
-		document.getElementById("column1-wrap").style.display = "none";
-		document.getElementById("column2").style.display = "none";
-		document.getElementById("instructions").innerHTML = "<BR><BR><BR><B>You must log in to Netflix prior to setting preferences.<br><br><br>If you just installed, you may need to reload the Netflix Instant homepage so that the active Netflix profile can be detected.<br><br><br>If after doing this you still get this message, try switching Netflix profiles.</B><BR><BR>";
-		return;
-	}
-	console.log("profile name is " + profile_name);
-
-
-	KEY_NAME = "flix_plus " + profile_name + " prefs";
-
-	// We want the tab id so that we can refresh the window that launched this
-	var bg = chrome.extension.getBackgroundPage();
-	_tabId = bg.current_tab_id;
-
 	chrome.storage.sync.get(KEY_NAME, function(items)
 	{
-		//var all_prefs = localStorage["$EXTSHORTNAME " + profile_name + " prefs"];
+		//var all_prefs = localStorage["$EXTSHORTNAME " + _profile_name + " prefs"];
 		var all_prefs = items[KEY_NAME];
 		if (typeof(all_prefs) === 'undefined')
 			all_prefs = defaults;
@@ -229,9 +229,34 @@ chrome.storage.local.get("flix_plus profilename", function(items)
 		init_config(enabled_scripts);
 	});
 
-	keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + profile_name + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
+	keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + _profile_name + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
 	{
 	    _keyboard_shortcuts_help = keyboard_shortcuts_info.get_help_text(keyboard_id_to_shortcut_dict, true);
 	    console.log(_keyboard_shortcuts_help);
 	});
+}
+
+//// Actually do stuff /////
+chrome.storage.local.get("flix_plus profilename", function(items)
+{
+	var profile_name = items["flix_plus profilename"];
+
+	if (typeof(profile_name) === "undefined")
+	{
+		document.getElementById("column1-wrap").style.display = "none";
+		document.getElementById("column2").style.display = "none";
+		document.getElementById("instructions").innerHTML = "<BR><BR><BR><B>You must log in to Netflix prior to setting preferences.<br><br><br>If you just installed, you may need to reload the Netflix Instant homepage so that the active Netflix profile can be detected.<br><br><br>If after doing this you still get this message, try switching Netflix profiles.</B><BR><BR>";
+		return;
+	}
+	console.log("profile name is " + profile_name);
+	_profile_name = profile_name;
+
+
+	KEY_NAME = "flix_plus " + profile_name + " prefs";
+
+	// We want the tab id so that we can refresh the window that launched this
+	var bg = chrome.extension.getBackgroundPage();
+	_tabId = bg.current_tab_id;
+
+	load_settings();
 });
