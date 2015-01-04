@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Beginning of file-level footer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  var endTime = new Date();
-  consolelog(1, 'full load time = ' + (endTime - startTime) + 'ms');
-}  // main
+        var endTime = new Date();
+        consolelog(1, 'full load time = ' + (endTime - startTime) + 'ms');
+    }  // main
 
-  main(run_scripts);
+    main(run_scripts);
 }(); // global scope
