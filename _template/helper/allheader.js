@@ -7,10 +7,13 @@ if ((location.host === "dvd.netflix.com") && location.pathname.indexOf("/Search"
 }
 
 // Redirect WiAltGenre page to WiGenre
-if (window.location.href.indexOf("WiGenre") !== -1) { 
+if (window.location.href.indexOf("WiGenre") !== -1) {
   document.removeChild(document.documentElement);
-  window.location.href = window.location.href.replace("WiGenre", "WiAltGenre"); 
+  window.location.href = window.location.href.replace("WiGenre", "WiAltGenre");
 }
+
+extlib.addStyle("fp_main_stylesheet", chrome.extension.getURL('../src/css/flixplus.css'));
+
 
 // Make sure that page icon appears to show preferences
 chrome.runtime.sendMessage({}, function(response) { });
@@ -24,7 +27,7 @@ load_enabled_scripts = function(profile_name, default_scripts, callback)
 {
   consolelog("load_enabled_scripts");
   var keyname = "$EXTSHORTNAME " + profile_name + " prefs";
-  consolelog(keyname);  
+  consolelog(keyname);
   var _callback = callback;
 
   fplib.syncGet(keyname, function(items)
@@ -36,7 +39,7 @@ load_enabled_scripts = function(profile_name, default_scripts, callback)
     if (typeof(all_prefs) === 'undefined')
       all_prefs = default_scripts;
     var enabled_scripts = {};
-  
+
     var all_prefs_array = all_prefs.split(",");
     for (i = 0; i < all_prefs_array.length; i++)
     {
@@ -47,7 +50,7 @@ load_enabled_scripts = function(profile_name, default_scripts, callback)
 
     callback(enabled_scripts);
   });
-}
+};
 
 function consolelog(msg)
 {
@@ -70,13 +73,13 @@ function consolelog(level, msg)
 main = function(callback)
 {
   __debug_level = localStorage["$EXTSHORTNAME debug_level"];
-  if(typeof(__debug_level) === "undefined")
+  if (typeof(__debug_level) === "undefined")
     __debug_level = 0;
 
   var profile_name = fplib.getProfileName();
   consolelog(1, "profile name is " + profile_name);
 
-  consolelog(2,"Loading prefs");
+  consolelog(2, "Loading prefs");
   consolelog(default_scripts);
   load_enabled_scripts(profile_name, default_scripts, function(enabled_scripts_param)
   {
@@ -95,16 +98,16 @@ main = function(callback)
       if ((location.host === "dvd.netflix.com") && location.pathname.indexOf("/Search") === 0)
       {
         if ($(".kids a").length)
-          $(".kids a")[0].innerText = ""; 
+          $(".kids a")[0].innerText = "";
       }
 
     }
     var settings_loaded_time = new Date();
-    consolelog(1, 'settings loaded time = ' + (settings_loaded_time-startTime) + 'ms');
+    consolelog(1, 'settings loaded time = ' + (settings_loaded_time - startTime) + 'ms');
 
     callback();
   });
-}
+};
 
 run_scripts = function()
 {

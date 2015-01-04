@@ -10,7 +10,7 @@
 			"level": "DEBUG"
 		},
 		"activations":
-	    [{ 	
+	    [{
 		        "styles": [],
 		        "patterns": $ACTIVATION_PATTERNS,
 		        "run_at": "start",
@@ -34,7 +34,7 @@
 		        "scripts": [
 		            "js/userscripts/end.js"
 		        ]
-		    }			
+		    }
 	    ],
 		"contact": true,
 		"file": true,
@@ -55,5 +55,5 @@
             "default_title": "$NAME_TEXT",
             "default_icon": "favicon.ico"
         }
-	}	
+	}
 }

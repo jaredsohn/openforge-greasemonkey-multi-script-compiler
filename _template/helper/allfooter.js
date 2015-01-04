@@ -2,7 +2,7 @@
 // Beginning of file-level footer
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   var endTime = new Date();
-  consolelog(1, 'full load time = ' + (endTime-startTime) + 'ms');
+  consolelog(1, 'full load time = ' + (endTime - startTime) + 'ms');
 }  // main
 
   main(run_scripts);
