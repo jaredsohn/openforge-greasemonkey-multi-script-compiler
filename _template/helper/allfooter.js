@@ -5,5 +5,5 @@
         consolelog(1, 'full load time = ' + (endTime - startTime) + 'ms');
     }  // main
 
-    main(run_scripts);
+    main(runScripts);
 }(); // global scope

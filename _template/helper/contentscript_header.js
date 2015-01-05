@@ -30,11 +30,11 @@ $SCRIPT_ID_code = function() {
     }
 
 
-    var start_time = new Date();
+    var startTime = new Date();
 
     var ___contentscript_id = "$SCRIPT_ID";
 
-    if ((enabled_scripts !== null) && (((typeof(enabled_scripts["$SCRIPT_ID"]) === 'undefined')) || (enabled_scripts["$SCRIPT_ID"] !== "true")))
+    if ((__enabledScripts !== null) && (((typeof(__enabledScripts["$SCRIPT_ID"]) === 'undefined')) || (__enabledScripts["$SCRIPT_ID"] !== "true")))
         return;
 
     $INCEXC

@@ -1,28 +1,28 @@
 window.onload = function()
 {
-    document.getElementById("webstore").addEventListener("click", goto_webstore);
-    document.getElementById("feedback").addEventListener("click", goto_feedback);
-    document.getElementById("more_info").addEventListener("click", goto_more_info);
-    document.getElementById("options").addEventListener("click", goto_options);
+    document.getElementById("webstore").addEventListener("click", gotoWebstore);
+    document.getElementById("feedback").addEventListener("click", gotoFeedback);
+    document.getElementById("more_info").addEventListener("click", gotoMoreInfo);
+    document.getElementById("options").addEventListener("click", gotoOptions);
     setTimeout(function() { document.getElementById("options").focus(); }, 100);
 };
 
-var goto_webstore = function()
+var gotoWebstore = function()
 {
     window.open("$WEBSTORE_URL");
 };
 
-var goto_feedback = function()
+var gotoFeedback = function()
 {
     window.open("$FEEDBACK_URL");
 };
 
-var goto_more_info = function()
+var gotoMoreInfo = function()
 {
     window.open("$MORE_INFO_URL");
 };
 
-var goto_options = function()
+var gotoOptions = function()
 {
     window.open(chrome.extension.getURL("src/options.html"));
 };

@@ -20,13 +20,13 @@ chrome.runtime.sendMessage({}, function(response) { });
 
 var startTime = new Date();
 var __debug_level = 0;
-var enabled_scripts = {};
-var default_scripts = "$DEFAULT_SCRIPTS";
+var __enabledScripts = {};
+var defaultScripts = "$DEFAULT_SCRIPTS";
 
-load_enabled_scripts = function(profile_name, default_scripts, callback)
+var loadEnabledScripts = function(profileName, defaultScripts, callback)
 {
-    consolelog("load_enabled_scripts");
-    var keyname = "$EXTSHORTNAME " + profile_name + " prefs";
+    consolelog("loadEnabledScripts");
+    var keyname = "$EXTSHORTNAME " + profileName + " prefs";
     consolelog(keyname);
     var _callback = callback;
 
@@ -35,39 +35,39 @@ load_enabled_scripts = function(profile_name, default_scripts, callback)
         consolelog("found prefs:");
         consolelog(items);
         //var all_prefs = localStorage["$EXTSHORTNAME " + profile_name + " prefs"];
-        var all_prefs = items[keyname];
-        if (typeof(all_prefs) === 'undefined')
-            all_prefs = default_scripts;
-        var enabled_scripts = {};
+        var allPrefs = items[keyname];
+        if (typeof(allPrefs) === 'undefined')
+            allPrefs = defaultScripts;
+        var enabledScripts = {};
 
-        var all_prefs_array = all_prefs.split(",");
-        for (i = 0; i < all_prefs_array.length; i++)
+        var allPrefsArray = allPrefs.split(",");
+        for (i = 0; i < allPrefsArray.length; i++)
         {
-            if (all_prefs_array[i] !== "")
-                enabled_scripts[all_prefs_array[i]] = "true";
+            if (allPrefsArray[i] !== "")
+                enabledScripts[allPrefsArray[i]] = "true";
         }
-        consolelog(2, enabled_scripts);
+        consolelog(2, enabledScripts);
 
-        callback(enabled_scripts);
+        callback(enabledScripts);
     });
 };
 
 function consolelog(msg)
 {
-        consolelog(0, msg);
+    consolelog(0, msg);
 }
 function consolelog(level, msg)
 {
-        // Levels:
-        // -- 0 = no messages
-        // -- 1 = just high level messages (produced by compiler)
-        // -- 2 = less important messages (produced by compiler)
-        // -- 3 = all messages (produced by userscripts)
-        //
-        // so call this method with level=-1 to show it even if all other messages are suppressed.
+    // Levels:
+    // -- 0 = no messages
+    // -- 1 = just high level messages (produced by compiler)
+    // -- 2 = less important messages (produced by compiler)
+    // -- 3 = all messages (produced by userscripts)
+    //
+    // so call this method with level=-1 to show it even if all other messages are suppressed.
 
-        if (level <= __debug_level)
-                console.log(msg);
+    if (level <= __debug_level)
+        console.log(msg);
 }
 
 main = function(callback)
@@ -76,19 +76,19 @@ main = function(callback)
     if (typeof(__debug_level) === "undefined")
         __debug_level = 0;
 
-    var profile_name = fplib.getProfileName();
-    consolelog(1, "profile name is " + profile_name);
+    var profileName = fplib.getProfileName();
+    consolelog(1, "profile name is " + profileName);
 
     consolelog(2, "Loading prefs");
-    consolelog(default_scripts);
-    load_enabled_scripts(profile_name, default_scripts, function(enabled_scripts_param)
+    consolelog(defaultScripts);
+    loadEnabledScripts(profileName, defaultScripts, function(enabledScriptsParam)
     {
 //    console.log("param = ");
-        consolelog("enabled_scripts = ");
-        consolelog(enabled_scripts_param);
-        enabled_scripts = enabled_scripts_param;
+        consolelog("__enabledScripts = ");
+        consolelog(enabledScriptsParam);
+        __enabledScripts = enabledScriptsParam;
         // extra code for getting scripts to work with each other
-        if ((enabled_scripts === null) || (enabled_scripts["id_darker_netflix"]))
+        if ((__enabledScripts === null) || (__enabledScripts["id_darker_netflix"]))
         {
             consolelog("changing css for extlib_button to match darker_netflix");
             extlib.addGlobalStyle('.extlib_button { background-color: #333333 !important ; color: #EEEEEE; !important  }');
@@ -102,14 +102,14 @@ main = function(callback)
             }
 
         }
-        var settings_loaded_time = new Date();
-        consolelog(1, 'settings loaded time = ' + (settings_loaded_time - startTime) + 'ms');
+        var settingsLoadedTime = new Date();
+        consolelog(1, 'settings loaded time = ' + (settingsLoadedTime - startTime) + 'ms');
 
         callback();
     });
 };
 
-run_scripts = function()
+runScripts = function()
 {
 
 

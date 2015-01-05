@@ -6,7 +6,7 @@ var defaults = "$DEFAULT_SCRIPTS";
 var _keyboard_shortcuts_help = "";
 //console.log(scripts_data.categories);
 
-init_config = function(saved_state)
+var init_config = function(saved_state)
 {
     var saved_state_null = false;
 
@@ -256,7 +256,7 @@ chrome.storage.local.get("flix_plus profilename", function(items)
 
     // We want the tab id so that we can refresh the window that launched this
     var bg = chrome.extension.getBackgroundPage();
-    _tabId = bg.current_tab_id;
+    _tabId = bg.currentTabId;
 
     load_settings();
 });

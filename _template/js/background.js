@@ -1,9 +1,9 @@
-var current_tab_id = -1;
+var currentTabId = -1;
 
-var install_time = localStorage.getItem("install_time");
-var install_version = localStorage.getItem("install_version");
+var installTime = localStorage.getItem("install_time");
+var installVersion = localStorage.getItem("install_version");
 
-if (install_time === null)
+if (installTime === null)
 {
     localStorage.setItem("install_time", new Date());
     localStorage.setItem("install_version", chrome.app.getDetails().version);
@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
 
     chrome.pageAction.show(sender.tab.id);
-    current_tab_id = sender.tab.id;
+    currentTabId = sender.tab.id;
 
     sendResponse({});
 });
