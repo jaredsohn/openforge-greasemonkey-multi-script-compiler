@@ -32,8 +32,7 @@ def get_userscript_header(file_contents, show_warnings):
 
 	for line in lines:
 		if len(line) > longest_line_length:
-			longest_line_length = len(line)	
-				
+			longest_line_length = len(line)
 		stripped = line.strip()
 		count += 1
 
@@ -155,7 +154,7 @@ def load_prev_script_info(filename):
 			prev_script_info[row['id']] = row
 #			print("~~")
 #			print row
-			
+
 		return prev_script_info
 	else:
 		return defaultdict(str)
@@ -256,12 +255,13 @@ def process_userscripts(project_name):
 	template_popup_html           = open(join(template_folder, "popup.html"), 					'r').read()
 	template_options_html         = open(join(template_folder, "options.html"), 				'r').read()
 
-
 	template_popup_js             = open(join(template_folder, "js/popup.js"), 					'r').read()
 
 	template_openforge_config     = open(join(template_folder, "config.json"),					'r').read() #openforge template file
 
 	input_welcome_html            = open(join(input_folder,	   "welcome.html"), 				'r').read()
+	input_perftips_js             = open(join(input_folder,    "js/perftips.js"), 				'r').read()
+
 	compiler_config_file  		  = open(join(input_folder,    "compiler_config.json"),			'r')
 	compiler_config = json.load(compiler_config_file)
 
@@ -285,7 +285,7 @@ def process_userscripts(project_name):
 
 				# TODO: instead of displaying warnings within get_userscript_header, should instead include in dict (and then we remove from dict here)
 				if (file_id in prev_script_info) and ('ignore_warnings' in prev_script_info[file_id]):
-					ignore_warnings = prev_script_info[file_id]['ignore_warnings']	
+					ignore_warnings = prev_script_info[file_id]['ignore_warnings']
 					if ignore_warnings.lower() != 'true':
 						ignore_warnings = False
 				else:
@@ -307,7 +307,7 @@ def process_userscripts(project_name):
 					if key in ["include", "match"]:
 						header["match_include_parsed"] = header["match_include_parsed"] + header[key]
 						del header[key]
-					elif key in ["exclude"]:						
+					elif key in ["exclude"]:
 						header[key + "_parsed"] = header[key + "_parsed"] + header[key]
 						del header[key]
 					elif key in ["require"]:						# for now, require review on require.  Eventually at least handle jquery automatically and potentially download the file for inclusion.
@@ -344,7 +344,7 @@ def process_userscripts(project_name):
 #								print('!!!')
 #								print(custom_key)
 #								print(header[custom_key])
-#								print(type(header[custom_key]))							
+#								print(type(header[custom_key]))
 								if type(header[custom_key]) is list:
 									header[new_key] = list()
 									header[new_key].append(custom_val)
@@ -354,7 +354,7 @@ def process_userscripts(project_name):
 								if type(header[custom_key]) is list:
 									header[custom_key].append(custom_val)
 								else:
-									header[custom_key] = custom_val									
+									header[custom_key] = custom_val
 
 				# download requires
 				#for require in header["require"]:
@@ -419,12 +419,13 @@ def process_userscripts(project_name):
 	shutil.copyfile(join(template_folder, ".forgeignore"), join(output_folder, ".forgeignore"))
 	shutil.copyfile(join(template_folder, "LICENSE-crx-options-page.txt"), join(output_folder, "LICENSE-crx-options-page.txt"))	
 
-	shutil.copyfile(join(input_folder, "identity.json"), join(output_folder, "identity.json"))	
+	shutil.copyfile(join(input_folder, "identity.json"), join(output_folder, "identity.json"))
 	shutil.copyfile(join(input_folder, "prefs_keyboard_shortcuts.html"), join(output_folder, "prefs_keyboard_shortcuts.html"))
 	shutil.copyfile(join(input_folder, "prefs_fade.html"), join(output_folder, "prefs_fade.html"))
+	shutil.copyfile(join(input_folder, "perftips.html"), join(output_folder, "perftips.html"))
 
 	copyanything(os.path.join(input_folder, "icons"), output_folder)
-	copyanything(os.path.join(input_folder, "css"), os.path.join(output_folder, "css")) 
+	copyanything(os.path.join(input_folder, "css"), os.path.join(output_folder, "css"))
 	copyanything(os.path.join(input_folder, "img"), os.path.join(output_folder, "img"))
 	copyanything(os.path.join(input_folder, "js"), os.path.join(output_folder, "js"))
 
@@ -437,8 +438,8 @@ def process_userscripts(project_name):
 	rep = { "$NAME_SHORT": compiler_config["name_short"],
 			"$NAME_HTML": compiler_config["name_html"],
 			"$NAME_TEXT": compiler_config["name_text"],
-			"$ACTIVATION_PATTERNS": compiler_config["activation_patterns"], 
-			"$VERSION": compiler_config["version"], 
+			"$ACTIVATION_PATTERNS": compiler_config["activation_patterns"],
+			"$VERSION": compiler_config["version"],
 			"$DESCRIPTION": compiler_config["description"],
 			"$WEBSTORE_URL": compiler_config["webstore_url"],
 			"$FEEDBACK_URL": compiler_config["feedback_url"],
@@ -491,7 +492,7 @@ def process_userscripts(project_name):
 				#print script_for_runat
 
 		new_all_header = template_all_header.replace("$START_OR_END", runat);
-		new_all_header = new_all_header.replace("$EXTSHORTNAME", project_name);		
+		new_all_header = new_all_header.replace("$EXTSHORTNAME", project_name);
 		new_all_header = new_all_header.replace("$DEFAULT_SCRIPTS", default_list_string);
 
 		outputfile_contents = new_all_header + separator
@@ -520,6 +521,9 @@ def process_userscripts(project_name):
 
 	write_file(join(os.path.join(output_folder, 'js'), "options.js"), template_options)
 
+	input_perftips_js = input_perftips_js.replace("$DEFAULT_SCRIPTS", default_list_string);
+	write_file(join(os.path.join(output_folder, 'js'), "perftips.js"), input_perftips_js)
+
 	# write out new order for load next time
 	order_data = {}
 	order_data["order"] = ui_data["categories"]
@@ -537,7 +541,6 @@ def process_userscripts(project_name):
 
 	input_welcome_html = pattern.sub(lambda m: rep[re.escape(m.group(0))], input_welcome_html)
 	write_file(join(output_folder, "welcome.html"), input_welcome_html)
-
 
 	##############################################################################################################
 

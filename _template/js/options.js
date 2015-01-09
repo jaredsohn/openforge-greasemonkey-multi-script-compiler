@@ -1,9 +1,9 @@
 var scripts_data = $SCRIPTS_JSON;
 
-var _profile_name = "_unknown";
-var KEY_NAME = "flix_plus " + _profile_name + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
-var defaults = "$DEFAULT_SCRIPTS";
-var _keyboard_shortcuts_help = "";
+var profile_name_ = "_unknown";
+var KEY_NAME = "flix_plus " + profile_name_ + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
+var defaults_ = "$DEFAULT_SCRIPTS";
+var keyboard_shortcuts_help_ = "";
 //console.log(scripts_data.categories);
 
 var init_config = function(saved_state)
@@ -105,7 +105,7 @@ var init_config = function(saved_state)
                 //console.log(script_info);
                 preview_image.src = script_info.screenshot;
                 document.getElementById("feature_name").textContent = e.target.parentNode.childNodes[1].textContent;
-                document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", _keyboard_shortcuts_help);
+                document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", keyboard_shortcuts_help_);
 
                 if (script_info.author_url !== "")
                     document.getElementById("author_credit").innerHTML = "Script by <a href='" + script_info.author_url + "'>" + script_info.author + "</a>";
@@ -151,7 +151,7 @@ var on_uncheck_all = function()
 
 var on_restore_defaults = function()
 {
-    console.log(_profile_name);
+    console.log(profile_name_);
     if (window.confirm("Click okay to restore this extension's defaults.  Cannot be undone.") === true)
     {
         var script_list = document.getElementById("script_list");
@@ -159,8 +159,8 @@ var on_restore_defaults = function()
         chrome.storage.sync.clear();
         chrome.storage.local.clear();
 
-        console.log("setting profilename: " + _profile_name);
-        chrome.storage.local.set({"flix_plus profilename" : _profile_name}, function(items) {});
+        console.log("setting profilename: " + profile_name_);
+        chrome.storage.local.set({"flix_plus profilename" : profile_name_}, function(items) {});
 
         load_settings();
         alert("Extension defaults restored.");
@@ -212,27 +212,27 @@ function load_settings()
 {
     chrome.storage.sync.get(KEY_NAME, function(items)
     {
-        //var all_prefs = localStorage["$EXTSHORTNAME " + _profile_name + " prefs"];
+        //var all_prefs = localStorage["$EXTSHORTNAME " + profile_name_ + " prefs"];
         var all_prefs = items[KEY_NAME];
         if (typeof(all_prefs) === 'undefined')
-            all_prefs = defaults;
+            all_prefs = defaults_;
 
         var enabled_scripts = {};
         var all_prefs_array = all_prefs.split(",");
         for (i = 0; i < all_prefs_array.length; i++)
         {
-          if (all_prefs_array[i] !== "")
-            enabled_scripts[all_prefs_array[i]] = "true";
+            if (all_prefs_array[i] !== "")
+                enabled_scripts[all_prefs_array[i]] = "true";
         }
         //console.log("enabled_scripts = ");
         //console.log(enabled_scripts);
         init_config(enabled_scripts);
     });
 
-    keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + _profile_name + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
+    keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + profile_name_ + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
     {
-        _keyboard_shortcuts_help = keyboard_shortcuts_info.get_help_text(keyboard_id_to_shortcut_dict, "all");
-        console.log(_keyboard_shortcuts_help);
+        keyboard_shortcuts_help_ = keyboard_shortcuts_info.get_help_text(keyboard_id_to_shortcut_dict, "all");
+        console.log(keyboard_shortcuts_help_);
     });
 }
 
@@ -249,7 +249,7 @@ chrome.storage.local.get("flix_plus profilename", function(items)
         return;
     }
     console.log("profile name is " + profile_name);
-    _profile_name = profile_name;
+    profile_name_ = profile_name;
 
 
     KEY_NAME = "flix_plus " + profile_name + " prefs";
