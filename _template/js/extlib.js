@@ -115,9 +115,9 @@ var extlib_ = function()
     //
     // The calling code should ensure the new data is written to localStorage (possibly merged with existing data)
     //
-    // keynames can be an array or a string.  Only the first keyname will be used with last_full_check and _last_checked but
-    // it will otherwise work with data for all keys.  The callback will pass back an array if keynames was an array and otherwise passes
-    // back a string.
+    // keynames is an array.  Only the first keyname will be used with last_full_check and _last_checked but
+    // it will otherwise work with data for all keys.  The callback passes back an array with data corresponding to
+    // each keyname.
     //
     // This code was written for Flix Plus by Lifehacker
     this.checkForNewData = function(keynames, waitInS, fullWaitInS, ajaxCall, callback) {
@@ -125,36 +125,39 @@ var extlib_ = function()
         consolelog(keynames);
 
         var now = new Date().getTime();
-        var keynamesArray = keynames;
 
-        if (keynames.constructor === String)
-            keynamesArray = [keynames];
-
-        var len = keynamesArray.length;
-
-        var lastFullCheck = localStorage[keynamesArray[0] + "_last_full_check"];
+        var lastFullCheck = localStorage[keynames[0] + "_last_full_check"];
         if (typeof(lastFullCheck) === "undefined")
             lastFullCheck = 0;
 
-        var historyLastChecked = localStorage[keynamesArray[0] + "_last_checked"];
+        var historyLastChecked = localStorage[keynames[0] + "_last_checked"];
         if (typeof(historyLastChecked) === "undefined")
         {
-            for (i = 0; i < len; i++)
-                delete localStorage[keynamesArray[i]];
+            for (i = 0; i < keynames.length; i++)
+                delete localStorage[keynames[i]];
             historyLastChecked = 0;
         }
 
         var oldDatas = [];
-        for (i = 0; i < len; i++)
-            oldDatas.push(localStorage[keynamesArray[i]]);
+        for (i = 0; i < keynames.length; i++)
+        {
+            var f = localStorage[keynames[i]];
+            if (typeof(f) === "undefined")
+                f = "";
+            oldDatas.push(f);
+        }
+
+        // Return the data we have now.  We may need to update and return the data again later.
+        if (callback !== null)
+            callback(oldDatas);
 
         var longEnoughSinceUpdate = new Date(parseInt(historyLastChecked)).getTime() + (waitInS * 1000);
         var longEnoughSinceUpdate2 = new Date(parseInt(lastFullCheck)).getTime() + (fullWaitInS * 1000);
 
         if (longEnoughSinceUpdate2 < now)
         {
-            for (i = 0; i < len; i++)
-                consolelog("getting all data from scratch again for " + keynamesArray[i]);
+            for (i = 0; i < keynames.length; i++)
+                consolelog("getting all data from scratch again for " + keynames[i]);
             historyLastChecked = 0;
         }
 
@@ -165,11 +168,9 @@ var extlib_ = function()
             ajaxCall(historyLastChecked, function(datas)
             {
                 // Append the data and act on it
-                if (keynames.constructor === String)
-                    datas = oldDatas[0] + "," + datas;
-                else if (typeof(oldDatas) !== "undefined")
+                if (typeof(oldDatas) !== "undefined")
                 {
-                    for (i = 0; i < len; i++)
+                    for (i = 0; i < keynames.length; i++)
                         datas[i] = oldDatas[i] + "," + datas[i];
                 }
 
@@ -178,27 +179,23 @@ var extlib_ = function()
             });
 
             // Keep track of history
-            localStorage[keynamesArray[0] + "_last_checked"] = now;
+            localStorage[keynames[0] + "_last_checked"] = now;
             if (historyLastChecked === 0)
             {
-                localStorage[keynamesArray[0] + "_last_full_check"] = now;
-                for (i = 0; i < len; i++)
-                    localStorage[keynamesArray[i]] = ""; // don't merge with old data
+                localStorage[keynames[0] + "_last_full_check"] = now;
+                for (i = 0; i < keynames.length; i++)
+                    localStorage[keynames[i]] = ""; // don't merge with old data
             }
-
         } else
         {
             var datas = [];
-            for (i = 0; i < len; i++)
+            for (i = 0; i < keynames.length; i++)
             {
-                var data = localStorage[keynamesArray[i]];
+                var data = localStorage[keynames[i]];
                 if (typeof(data) === "undefined")
                     data = "";
                 datas.push(data);
             }
-
-            if (keynames.constructor === String)
-                datas = datas[0];
 
             if (callback !== null)
                 callback(datas);
