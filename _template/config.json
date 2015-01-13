@@ -48,7 +48,7 @@
 		"tools": true,
 		"reload": true,
         "background": {
-            "files": ["js/background.js"]
+            "files": ["js/jquery-2.1.1.min.js", "js/background.js"]
         },
         "button": {
             "default_popup": "popup.html",

@@ -2,11 +2,11 @@
 //
 // Functions in this class should not be specific to Netflix.
 //
-// License: Apache.  Some of the code may have come from userscripts used in Flix Plus, but it likely
+// License: MIT/GPL.  Some of the code may have come from userscripts used in Flix Plus, but it likely
 // originated from Stackoverflow
 
 var extlib = extlib || {};
-var _extlib = function()
+var extlib_ = function()
 {
     var self = this;
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,8 @@ var _extlib = function()
     // from Stackoverflow
     this.stackTrace = function()
     {
-         consolelog((new Error).stack);
+        console.trace("stacktrace");
+        consolelog((new Error).stack);
     };
 
     function consolelog(msg)
@@ -109,8 +110,8 @@ var _extlib = function()
             left: left
         };
     };
-    // We call a function to get more data only if it has been five minutes since last time and gets full data if it has been 28 hours
-    // since the last time we did that (in case older data was undone). Uses localStorage.
+    // We call a function to get more data only if a certain amount of time has lapsed since the last time and
+    // get full data after another time period (in case older data was removed).
     //
     // The calling code should ensure the new data is written to localStorage (possibly merged with existing data)
     //
@@ -118,70 +119,71 @@ var _extlib = function()
     // it will otherwise work with data for all keys.  The callback will pass back an array if keynames was an array and otherwise passes
     // back a string.
     //
-    // This code was written for Flix Plus
-    this.checkForNewData = function(keynames, wait_in_s, full_wait_in_s, ajax_call, callback) {
-        consolelog("keynames = ");
+    // This code was written for Flix Plus by Lifehacker
+    this.checkForNewData = function(keynames, waitInS, fullWaitInS, ajaxCall, callback) {
+        consolelog("checkForNewData keynames = ");
         consolelog(keynames);
+
         var now = new Date().getTime();
-        var keynames_array = keynames;
+        var keynamesArray = keynames;
 
         if (keynames.constructor === String)
-            keynames_array = [keynames];
+            keynamesArray = [keynames];
 
-        var len = keynames_array.length;
+        var len = keynamesArray.length;
 
-        var last_full_check = localStorage[keynames_array[0] + "_last_full_check"];
-        if (typeof(last_full_check) === "undefined")
-            last_full_check = 0;
+        var lastFullCheck = localStorage[keynamesArray[0] + "_last_full_check"];
+        if (typeof(lastFullCheck) === "undefined")
+            lastFullCheck = 0;
 
-        var history_last_checked = localStorage[keynames_array[0] + "_last_checked"];
-        if (typeof(history_last_checked) === "undefined")
+        var historyLastChecked = localStorage[keynamesArray[0] + "_last_checked"];
+        if (typeof(historyLastChecked) === "undefined")
         {
             for (i = 0; i < len; i++)
-                delete localStorage[keynames_array[i]];
-            history_last_checked = 0;
+                delete localStorage[keynamesArray[i]];
+            historyLastChecked = 0;
         }
 
-        var old_datas = [];
+        var oldDatas = [];
         for (i = 0; i < len; i++)
-            old_datas.push(localStorage[keynames_array[i]]);
+            oldDatas.push(localStorage[keynamesArray[i]]);
 
-        var long_enough_since_update = new Date(parseInt(history_last_checked)).getTime() + (wait_in_s * 1000);
-        var long_enough_since_update2 = new Date(parseInt(last_full_check)).getTime() + (full_wait_in_s * 1000);
+        var longEnoughSinceUpdate = new Date(parseInt(historyLastChecked)).getTime() + (waitInS * 1000);
+        var longEnoughSinceUpdate2 = new Date(parseInt(lastFullCheck)).getTime() + (fullWaitInS * 1000);
 
-        if (long_enough_since_update2 < now)
+        if (longEnoughSinceUpdate2 < now)
         {
             for (i = 0; i < len; i++)
-                consolelog("getting all data from scratch again for " + keynames_array[i]);
-            history_last_checked = 0;
+                consolelog("getting all data from scratch again for " + keynamesArray[i]);
+            historyLastChecked = 0;
         }
 
-        if (Math.min(long_enough_since_update, long_enough_since_update2) < now)
+        if (Math.min(longEnoughSinceUpdate, longEnoughSinceUpdate2) < now)
         {
-            consolelog("checking " + keynames_array[0] + "_last_checked");
+            consolelog("requesting new data");
 
-            ajax_call(history_last_checked, function(datas)
+            ajaxCall(historyLastChecked, function(datas)
             {
+                // Append the data and act on it
                 if (keynames.constructor === String)
-                    datas = old_datas[0] + "," + datas;
-                else if (typeof(old_datas) !== "undefined")
+                    datas = oldDatas[0] + "," + datas;
+                else if (typeof(oldDatas) !== "undefined")
                 {
                     for (i = 0; i < len; i++)
-                        datas[i] = old_datas[i] + "," + datas[i];
+                        datas[i] = oldDatas[i] + "," + datas[i];
                 }
 
-                //localStorage[keynames_array[0]] = data;
                 if (callback !== null)
                     callback(datas);
             });
 
-            localStorage[keynames_array[0] + "_last_checked"] = now;
-
-            if (history_last_checked === 0)
+            // Keep track of history
+            localStorage[keynamesArray[0] + "_last_checked"] = now;
+            if (historyLastChecked === 0)
             {
-                localStorage[keynames_array[0] + "_last_full_check"] = now;
+                localStorage[keynamesArray[0] + "_last_full_check"] = now;
                 for (i = 0; i < len; i++)
-                    localStorage[keynames_array[i]] = ""; // don't merge with old data
+                    localStorage[keynamesArray[i]] = ""; // don't merge with old data
             }
 
         } else
@@ -189,7 +191,7 @@ var _extlib = function()
             var datas = [];
             for (i = 0; i < len; i++)
             {
-                var data = localStorage[keynames_array[i]];
+                var data = localStorage[keynamesArray[i]];
                 if (typeof(data) === "undefined")
                     data = "";
                 datas.push(data);
@@ -222,29 +224,29 @@ var _extlib = function()
     };
 
     // from netflix-rate userscript
-    this.addStyle = function(style_id, css_url)
+    this.addStyle = function(styleId, cssUrl)
     {
-        if (!$('#' + style_id).length) {
-            $("head").append("<link id='" + style_id + "' href='" + css_url + "' type='text/css' rel='stylesheet' />");
+        if (!$('#' + styleId).length) {
+            $("head").append("<link id='" + styleId + "' href='" + cssUrl + "' type='text/css' rel='stylesheet' />");
         }
     };
 
     // returns array of length two with the range (as integers); if part of range doesn't exist, set value to null
-    this.parse_year_range = function(year_str)
+    this.parseYearRange = function(yearStr)
     {
-        if ((year_str === null) || (year_str.trim() === ""))
+        if ((yearStr === null) || (yearStr.trim() === ""))
             return [null, null];
 
         try
         {
             var years = [];
 
-            if (year_str.indexOf("-") !== -1)
+            if (yearStr.indexOf("-") !== -1)
             {
-                var year_parts = year_str.split("-");
-                years = [parseInt(year_parts[0]), parseInt(year_parts[1])];
+                var yearParts = yearStr.split("-");
+                years = [parseInt(yearParts[0]), parseInt(yearParts[1])];
             } else
-                years = [parseInt(year_str), null];
+                years = [parseInt(yearStr), null];
 
         } catch (ex)
         {
@@ -255,4 +257,4 @@ var _extlib = function()
         return years;
     };
 };
-_extlib.call(extlib);
+extlib_.call(extlib);

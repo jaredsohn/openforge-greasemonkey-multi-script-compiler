@@ -52,6 +52,13 @@ var loadEnabledScripts = function(profileName, defaultScripts, callback)
     });
 };
 
+function stackTrace()
+{
+    console.log("_stacktrace_");
+    console.trace("sp");
+    console.log((new Error).stack);
+}
+
 function consolelog(msg)
 {
     consolelog(0, msg);
@@ -59,13 +66,11 @@ function consolelog(msg)
 function consolelog(level, msg)
 {
     // Levels:
-    // -- 0 = no messages
-    // -- 1 = just high level messages (produced by compiler)
-    // -- 2 = less important messages (produced by compiler)
-    // -- 3 = all messages (produced by userscripts)
-    //
-    // so call this method with level=-1 to show it even if all other messages are suppressed.
-
+    // -- -1 = force it to show even when messages are supressed
+    // --  0 = no messages
+    // --  1 = just high level messages (produced by compiler)
+    // --  2 = less important messages (produced by compiler)
+    // --  3 = all messages (produced by userscripts)
     if (level <= __debug_level)
         console.log(msg);
 }

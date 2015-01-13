@@ -11,13 +11,29 @@ if (installTime === null)
     chrome.tabs.create({ url: chrome.extension.getURL("src/welcome.html") });
 }
 
-
-// purpose: ensure that pageaction is shown and that we know the tab id.
+// Purpose: ensure that pageaction is shown and that we know the tab id.
+//
+// This also allows making http requests via the background page
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+
+    var response = {};
 
     chrome.pageAction.show(sender.tab.id);
     currentTabId = sender.tab.id;
 
-    sendResponse({});
+    if (typeof(request["request_type"]) !== "undefined")
+    {
+        if (request["request_type"] === "get")
+        {
+            $.get(request["url"], function(res) {
+                response['data'] = res;
+                sendResponse(response);
+            });
+        }
+        return true; // Needed to get contentscript to wait for async sendResponse
+    } else
+    {
+        sendResponse(response);
+    }
 });

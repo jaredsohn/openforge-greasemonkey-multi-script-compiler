@@ -4,6 +4,7 @@ var profile_name_ = "_unknown";
 var KEY_NAME = "flix_plus " + profile_name_ + " prefs"; // Note: even though in all caps, this is a 'constant' that is initialized later on
 var defaults_ = "$DEFAULT_SCRIPTS";
 var keyboard_shortcuts_help_ = "";
+var storageIsDefaults_ = false;
 //console.log(scripts_data.categories);
 
 var init_config = function(saved_state)
@@ -52,6 +53,8 @@ var init_config = function(saved_state)
                 checkbox_node.type = "CHECKBOX";
                 checkbox_node.id = key;
                 checkbox_node.className = "script_entry";
+                checkbox_node.addEventListener("change", on_checked);
+
                 label.appendChild(checkbox_node);
                 var str = scripts_data.userscripts[keys[key_index]].name;
 //              var str = key + ": " + scripts_data.userscripts[key].name;
@@ -129,6 +132,12 @@ var on_configure = function(e)
     window.open(e.target.getAttribute("data-filename"));
 };
 
+var on_checked = function()
+{
+    console.log("onchecked!");
+    storageIsDefaults_ = false;
+};
+
 var on_check_all = function()
 {
     var elements = document.getElementsByClassName("script_entry");
@@ -137,6 +146,7 @@ var on_check_all = function()
     {
         elements[i].checked = true;
     }
+    storageIsDefaults_ = false;
 };
 
 var on_uncheck_all = function()
@@ -147,66 +157,76 @@ var on_uncheck_all = function()
     {
         elements[i].checked = false;
     }
+    storageIsDefaults_ = false;
 };
 
 var on_restore_defaults = function()
 {
-    console.log(profile_name_);
-    if (window.confirm("Click okay to restore this extension's defaults.  Cannot be undone.") === true)
-    {
-        var script_list = document.getElementById("script_list");
-        script_list.innerHTML = "";
-        chrome.storage.sync.clear();
-        chrome.storage.local.clear();
-
-        console.log("setting profilename: " + profile_name_);
-        chrome.storage.local.set({"flix_plus profilename" : profile_name_}, function(items) {});
-
-        load_settings();
-        alert("Extension defaults restored.");
-    }
+    $("#script_list")[0].innerHTML = "";
+    init_ui_for_prefs(defaults_);
+    storageIsDefaults_ = true;
 };
 
 var on_save = function()
 {
-    var elements = document.getElementsByClassName("script_entry");
-    //console.log(elements);
-
-    var enabled_scripts = {};
-    var enabled_scripts_array = [];
-    for (i = 0; i < elements.length; i++)
+    if (storageIsDefaults_)
     {
-        //console.log(i);
-        //console.log(enabled_scripts_array);
-        if (elements[i].checked === true)
+        chrome.storage.sync.remove(KEY_NAME, function(items) {
+            console.log("preferences stored as 'use default'");
+            window.close();
+
+            // Force reload.  Chrome only.
+            chrome.tabs.reload(_tabId);
+        });
+    } else
         {
-            enabled_scripts_array.push(elements[i].id);
+        var elements = document.getElementsByClassName("script_entry");
+        //console.log(elements);
+
+        var enabled_scripts = {};
+        var enabled_scripts_array = [];
+        for (i = 0; i < elements.length; i++)
+        {
+            //console.log(i);
+            //console.log(enabled_scripts_array);
+            if (elements[i].checked === true)
+            {
+                enabled_scripts_array.push(elements[i].id);
+            }
+
+            enabled_scripts[elements[i].id] = elements[i].checked.toString();
         }
 
-        enabled_scripts[elements[i].id] = elements[i].checked.toString();
+        var enabled_scripts_str = enabled_scripts_array.toString();
+        console.log(enabled_scripts_str);
+
+        var obj = {};
+        obj[KEY_NAME] = enabled_scripts_str;
+        chrome.storage.sync.set(obj, function()
+        {
+            console.log("preferences stored");
+
+            window.close();
+
+            // Force reload.  Chrome only.
+            chrome.tabs.reload(_tabId);
+        });
     }
-
-    var enabled_scripts_str = enabled_scripts_array.toString();
-    console.log(enabled_scripts_str);
-
-    //var prefs_key = "reed prefs";
-    //var obj = {};
-    //obj[prefs_key] = enabled_scripts_str;
-
-//console.log("KEY_NAME: ");
-//console.log(KEY_NAME);
-    var obj = {};
-    obj[KEY_NAME] = enabled_scripts_str;
-    chrome.storage.sync.set(obj, function()
-    {
-        console.log("preferences stored");
-
-        window.close();
-
-        // Force reload.  Chrome only.
-        chrome.tabs.reload(_tabId);
-    });
 };
+
+function init_ui_for_prefs(all_prefs)
+{
+    var enabled_scripts = {};
+    var all_prefs_array = all_prefs.split(",");
+    for (i = 0; i < all_prefs_array.length; i++)
+    {
+        if (all_prefs_array[i] !== "")
+            enabled_scripts[all_prefs_array[i]] = "true";
+    }
+    //console.log("enabled_scripts = ");
+    //console.log(enabled_scripts);
+    init_config(enabled_scripts);
+}
 
 function load_settings()
 {
@@ -215,18 +235,12 @@ function load_settings()
         //var all_prefs = localStorage["$EXTSHORTNAME " + profile_name_ + " prefs"];
         var all_prefs = items[KEY_NAME];
         if (typeof(all_prefs) === 'undefined')
-            all_prefs = defaults_;
-
-        var enabled_scripts = {};
-        var all_prefs_array = all_prefs.split(",");
-        for (i = 0; i < all_prefs_array.length; i++)
         {
-            if (all_prefs_array[i] !== "")
-                enabled_scripts[all_prefs_array[i]] = "true";
+            all_prefs = defaults_;
+            storageIsDefaults_ = true;
         }
-        //console.log("enabled_scripts = ");
-        //console.log(enabled_scripts);
-        init_config(enabled_scripts);
+
+        init_ui_for_prefs(all_prefs);
     });
 
     keyboard_shortcuts_info.load_shortcut_keys("flix_plus " + profile_name_ + " keyboard_shortcuts", function(keyboard_shortcut_to_id_dict, keyboard_id_to_shortcut_dict)
