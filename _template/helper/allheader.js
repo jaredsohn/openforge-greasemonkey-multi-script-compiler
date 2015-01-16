@@ -54,8 +54,6 @@ var loadEnabledScripts = function(profileName, defaultScripts, callback)
 
 function stackTrace()
 {
-    console.log("_stacktrace_");
-    console.trace("sp");
     console.log((new Error).stack);
 }
 

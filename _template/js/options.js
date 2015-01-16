@@ -264,6 +264,7 @@ chrome.storage.local.get("flix_plus profilename", function(items)
     }
     console.log("profile name is " + profile_name);
     profile_name_ = profile_name;
+    $("#profilename")[0].innerHTML = "for profile " + profile_name_;
 
 
     KEY_NAME = "flix_plus " + profile_name + " prefs";

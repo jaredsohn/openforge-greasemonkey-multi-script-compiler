@@ -86,7 +86,6 @@ var extlib_ = function()
     // from Stackoverflow
     this.stackTrace = function()
     {
-        console.trace("stacktrace");
         consolelog((new Error).stack);
     };
 
@@ -120,7 +119,7 @@ var extlib_ = function()
     // each keyname.
     //
     // This code was written for Flix Plus by Lifehacker
-    this.checkForNewData = function(keynames, waitInS, fullWaitInS, ajaxCall, callback) {
+    this.checkForNewData = function(keynames, waitInS, fullWaitInS, ajaxCall, callback, doneCallback) {
         consolelog("checkForNewData keynames = ");
         consolelog(keynames);
 
@@ -163,7 +162,13 @@ var extlib_ = function()
 
         if (Math.min(longEnoughSinceUpdate, longEnoughSinceUpdate2) < now)
         {
-            consolelog("requesting new data");
+            //consolelog("requesting new data");
+
+            if (historyLastChecked === 0)
+            {
+                for (i = 0; i < keynames.length; i++)
+                    localStorage[keynames[i]] = ""; // don't merge with old data
+            }
 
             ajaxCall(historyLastChecked, function(datas)
             {
@@ -174,20 +179,25 @@ var extlib_ = function()
                         datas[i] = oldDatas[i] + "," + datas[i];
                 }
 
+                //consolelog("ajax done - datas2");
+                consolelog(datas);
+
+                // Keep track of history (after we have stored the data in localstorage)
+                localStorage[keynames[0] + "_last_checked"] = now;
+                if (historyLastChecked === 0)
+                    localStorage[keynames[0] + "_last_full_check"] = now;
+
                 if (callback !== null)
                     callback(datas);
-            });
 
-            // Keep track of history
-            localStorage[keynames[0] + "_last_checked"] = now;
-            if (historyLastChecked === 0)
-            {
-                localStorage[keynames[0] + "_last_full_check"] = now;
-                for (i = 0; i < keynames.length; i++)
-                    localStorage[keynames[i]] = ""; // don't merge with old data
-            }
+                if (doneCallback !== null)
+                    doneCallback();
+            });
         } else
         {
+            //consolelog("for last callback");
+            //consolelog(keynames);
+
             var datas = [];
             for (i = 0; i < keynames.length; i++)
             {
@@ -199,6 +209,8 @@ var extlib_ = function()
 
             if (callback !== null)
                 callback(datas);
+            if (doneCallback !== null)
+                doneCallback();
         }
     };
 
@@ -248,6 +260,7 @@ var extlib_ = function()
         } catch (ex)
         {
             consolelog(ex);
+            console.log(ex.stack);
             years = [null, null];
         }
 
