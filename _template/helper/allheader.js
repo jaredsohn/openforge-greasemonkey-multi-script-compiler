@@ -12,6 +12,10 @@ if (window.location.href.indexOf("WiGenre") !== -1) {
     window.location.href = window.location.href.replace("WiGenre", "WiAltGenre");
 }
 
+// Get /KidsMovie URLs to look nicer; we write links to here in some scripts and the CSS is broken
+if (location.pathname.indexOf("/KidsMovie") === 0)
+    $.each($(".boxShot-hd"), function() {this.classList.remove("boxShot-hd"); this.classList.add("boxShot-sd"); });
+
 extlib.addStyle("fp_main_stylesheet", chrome.extension.getURL('../src/css/flixplus.css'));
 
 
