@@ -18,7 +18,7 @@
 		        "scripts": [
 		            "js/jquery-2.1.1.min.js",
 		            "js/jquery.visible.min.js",
-		            "js/arrive-2.0.0.min.js",
+		            "js/arrive.min.js",
 		            "js/async.js",
 		            "js/extlib.js",
 		            "js/fplib.js",

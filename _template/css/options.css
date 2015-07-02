@@ -125,6 +125,7 @@ h1, h2, h3 {
 	-webkit-user-select: none;
 	        user-select: none;
 	cursor: default;
+	display:inline;
 }
 h1 {
 	font-size: 1.5em;
@@ -138,6 +139,20 @@ h3 {
 p {
 	margin: 0.65em 0;
 }
+
+#column1 {
+	display:inline;
+}
+
+#script_list {
+	display:inline;
+}
+
+
+section {
+	display: inline;
+}
+
 
 .sideBar {
 	position: fixed;
@@ -184,10 +199,11 @@ header {
 	background: -webkit-linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
 	background:         linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
 }
-header, section {
+
+/*header, section {
 	min-width: 600px;
 	max-width: 738px;
-}
+}*/
 section {
 	padding-left: 18px;
 	margin-top: 8px;
@@ -197,8 +213,34 @@ section h3 {
 	margin-left: -18px;
 }
 
+#buttons {
+	display:inline;
+}
+
 #profilename {
 	position:absolute;
 	top: 25px;
 	right: 25px;
+}
+
+.configure_button {
+	color: #999;
+	cursor: pointer;
+}
+
+.help_button {
+	color: #999;
+	cursor: help;
+}
+
+.option_disabled {
+	opacity: 0.5;
+}
+
+#netflix_slow {
+	display:none;
+}
+
+buttton {
+	display:inline;
 }

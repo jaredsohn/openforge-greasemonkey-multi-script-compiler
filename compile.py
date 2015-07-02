@@ -210,6 +210,7 @@ def create_data_for_ui(all_data, init_categories_order):
 		ui_data["userscripts"][key]['author'] = file_dict['author']
 		ui_data["userscripts"][key]['author_url'] = file_dict['author_url']
 		ui_data["userscripts"][key]['configure'] = file_dict['configure_required']
+		ui_data["userscripts"][key]['functionalityDisabled'] = file_dict['functionality_disabled_required']
 
 		if 'category_required' in file_dict:
 			category = file_dict['category_required']
@@ -291,7 +292,7 @@ def process_userscripts(project_name):
 				else:
 					ignore_warnings = False
 				inputfile_contents[file_id] = open(join(input_folder, dirpath, filename), 'r').read()
-				inputfile_contents[file_id] = inputfile_contents[file_id].replace("console.log(", "consolelog(3,")
+				inputfile_contents[file_id] = inputfile_contents[file_id].replace("console.log(", "consolelogExt.call(null,")
 
 				header = get_userscript_header(inputfile_contents[file_id], ignore_warnings == False)
 				if len(header.keys()) == 0:

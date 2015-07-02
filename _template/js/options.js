@@ -37,8 +37,11 @@ var init_config = function(saved_state)
         var h3_node = document.createElement("h3");
         h3_node.innerHTML = category;
         section_node.appendChild(h3_node);
+        var br_node = document.createElement("br");
+        section_node.appendChild(br_node);
         script_list.appendChild(section_node);
-
+        br_node = document.createElement("br");
+        script_list.appendChild(br_node);
 
         for (var key_index = 0; key_index < keys.length; key_index++)
         {
@@ -53,24 +56,25 @@ var init_config = function(saved_state)
                 checkbox_node.type = "CHECKBOX";
                 checkbox_node.id = key;
                 checkbox_node.className = "script_entry";
+                if ((scripts_data.userscripts[keys[key_index]].functionalityDisabled || "") ===  "TRUE")
+                    checkbox_node.disabled = true;
                 checkbox_node.addEventListener("change", on_checked);
 
                 label.appendChild(checkbox_node);
                 var str = scripts_data.userscripts[keys[key_index]].name;
 //              var str = key + ": " + scripts_data.userscripts[key].name;
+                if ((scripts_data.userscripts[keys[key_index]].functionalityDisabled || "") ===  "TRUE")
+                    label.classList.add("option_disabled");
                 label.appendChild(document.createTextNode(str));
 
                 var iSpan = document.createElement('span');
-                iSpan.style.color = "#999";
-                iSpan.style.cursor = "help";
+                iSpan.className = "help_button";
                 iSpan.appendChild(document.createTextNode(" (show)"));
                 label.appendChild(iSpan);
 
                 if (scripts_data.userscripts[keys[key_index]].configure.toUpperCase() !== "FALSE")
                 {
                     var iSpan = document.createElement('span');
-                    iSpan.style.color = "#999";
-                    iSpan.style.cursor = "pointer";
                     iSpan.className = "configure_button";
                     $(iSpan).attr("data-filename", scripts_data.userscripts[keys[key_index]].configure);
                     iSpan.appendChild(document.createTextNode(" (configure)"));
@@ -108,7 +112,13 @@ var init_config = function(saved_state)
                 //console.log(script_info);
                 preview_image.src = script_info.screenshot;
                 document.getElementById("feature_name").textContent = e.target.parentNode.childNodes[1].textContent;
-                document.getElementById("feature_desc").innerHTML = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", keyboard_shortcuts_help_);
+
+                var desc = script_info.description.replace("$KEYBOARD_SHORTCUTS_HELP", keyboard_shortcuts_help_);
+                if ((script_info.functionalityDisabled || "") ===  "TRUE")
+                {
+                    desc += "<br><br>This functionality is disabled since it still needs to be updated for Netflix's June 2015 update.";
+                }
+                document.getElementById("feature_desc").innerHTML = desc;
 
                 if (script_info.author_url !== "")
                     document.getElementById("author_credit").innerHTML = "Script by <a href='" + script_info.author_url + "'>" + script_info.author + "</a>";
@@ -119,10 +129,10 @@ var init_config = function(saved_state)
     };
 
     window.onresize = function(event) {
-        document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";
+        document.getElementById("column2").style.width = (window.innerWidth - $("#column1")[0].offsetWidth - $(".sideBar")[0].offsetWidth - 60 - $("#column2")[0].style.marginRight) + "px";
     };
 
-    document.getElementById("column2").style.width = (window.innerWidth - 600) + "px";
+    document.getElementById("column2").style.width = (window.innerWidth - $("#column1")[0].offsetWidth - $(".sideBar")[0].offsetWidth - 60 - $("#column2")[0].style.marginRight) + "px";
 };
 
 var on_configure = function(e)

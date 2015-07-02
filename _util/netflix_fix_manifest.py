@@ -10,7 +10,7 @@ obj["permissions"].append("http://www.omdbapi.com/*")
 contentscript = {};
 contentscript["matches"] = ["http://*.netflix.com/*", "https://*.netflix.com/*"];
 contentscript["all_frames"] = False;
-contentscript["js"] = [ "forge/app_config.js", "forge/all.js", "src/js/before_images.js"];
+contentscript["js"] = [ "forge/app_config.js", "forge/all.js"];
 contentscript["css"] = [];
 contentscript["run_at"] = "document_end";
 obj["content_scripts"].append(contentscript);
