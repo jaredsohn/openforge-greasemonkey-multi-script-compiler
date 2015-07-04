@@ -1,0 +1,1 @@
+Note: start.js was removed from config.json since we do not make use of it for Flix Plus.

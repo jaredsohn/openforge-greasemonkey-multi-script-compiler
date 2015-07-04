@@ -19,11 +19,10 @@
 		            "js/jquery-2.1.1.min.js",
 		            "js/jquery.visible.min.js",
 		            "js/arrive.min.js",
-		            "js/async.js",
+		            "js/async.min.js",
 		            "js/extlib.js",
 		            "js/fplib.js",
-		            "js/keyboard_shortcuts_info.js",
-		            "js/userscripts/start.js"
+		            "js/keyboard_shortcuts_info.js"
 		        ]
 	        },
 	        {
