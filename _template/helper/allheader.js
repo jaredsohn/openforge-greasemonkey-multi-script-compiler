@@ -44,7 +44,7 @@ function consolelogExt(msg) {
   consolelog(3, msg);
 }
 function consoleAllHeader(msg) {
-  consolelog(0, msg);
+  consolelog(1, msg);
 }
 function consolelog(level, msg) {
   // Levels:

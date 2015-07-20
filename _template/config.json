@@ -19,6 +19,7 @@
 		            "js/jquery-2.1.1.min.js",
 		            "js/jquery.visible.min.js",
 		            "js/arrive.min.js",
+		            "js/mutation-summary.js",
 		            "js/async.min.js",
 		            "js/extlib.js",
 		            "js/fplib.js",
