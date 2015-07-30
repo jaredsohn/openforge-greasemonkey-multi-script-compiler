@@ -132,8 +132,11 @@ var extlib_ = function() {
         ajaxCall(historyLastChecked, function(datas) {
           // Append the data and act on it
           if ((oldDatas || null) !== null) {
-            for (var i = 0; i < keyNames.length; i++)
+            for (var i = 0; i < keyNames.length; i++) {
               datas[i] = oldDatas[i] + "," + datas[i];
+              if (datas[i][0] === ",")
+                datas[i] = datas[i].substring(1);
+            }
           }
 
           //consolelog("ajax done - datas2");
