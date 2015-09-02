@@ -74,6 +74,22 @@ var extlib_ = function() {
     );
   }
 
+  // Adapted to ignore vertical component
+  this.isElementInViewportHorizontal = function(el) {
+
+    //special bonus for those using jQuery
+    if (typeof jQuery === "function" && el instanceof jQuery) {
+      el = el[0];
+    }
+
+    var rect = el.getBoundingClientRect();
+
+    return (
+      rect.left >= 0 &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
+  }
+
   // from Stackoverflow
   this.stackTrace = function() {
     consolelog((new Error).stack);
