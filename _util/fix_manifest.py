@@ -3,15 +3,8 @@
 import json
 obj = json.load(open("development/chrome/manifest.json"))
 
-del obj["browser_action"]
-
 obj["icons"] = dict()
 obj["icons"]["64"] = "src/favicon_64.png"
-obj["page_action"] = dict()
-obj["page_action"]["default_popup"] = "src/popup.html"
-obj["page_action"]["default_icon"] = dict()
-obj["page_action"]["default_icon"]["38"] = "src/favicon_38.png"
-obj["page_action"]["default_title"] = obj["name"]
 
 obj["web_accessible_resources"] = ["src/css/*", "src/img/*"]
 
