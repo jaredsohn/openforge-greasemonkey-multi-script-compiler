@@ -1,13 +1,13 @@
 openforge-greasemonkey-multi-script-compiler
 =======
 
-###About
+### About
 
 This is a framework that builds a browser extension from a collection of userscripts.  It was used to build the Flix Plus Chrome extension for Lifehacker.  Because this framework has only been used a single time for a single browser so far, more work is necessary to make it more general purpose.
 
 It is a spiritual successor to [greasemonkey-multi-script-compiler](https://github.com/ginatrapani/greasemonkey-multi-script-compiler)
 
-###How it works
+### How it works
 
 * You fill in some configuration files, provide icons, etc and place all userscripts into a folder.
 
@@ -16,7 +16,7 @@ It is a spiritual successor to [greasemonkey-multi-script-compiler](https://gith
 * The developer can configure script metadata by editing a CSV (Open Office works well for this.)
 
 
-###Setup
+### Setup
 
 1. Since this project is dependent on [OpenForge](https://github.com/trigger-corp/browser-extensions.git), set that up first.  Name the folder based on the extension you are trying to build.
 
@@ -34,7 +34,7 @@ It is a spiritual successor to [greasemonkey-multi-script-compiler](https://gith
    chmod +x compiler/y
 ```
 
-###Building
+### Building
    You can build an extension by running ./z from the flix_plus folder.  The Chrome extension is built in fix_plus/development/chrome.
    
 ### Development
@@ -44,7 +44,7 @@ More will be written on this soon.  But essentially you can run the greasemonkey
 New userscripts should be placed in flix_plus/compiler/_inputs/flix_plus/userscripts.
 
 
-###Licensing
+### Licensing
 
 This framework is licensed GPL. 
 
